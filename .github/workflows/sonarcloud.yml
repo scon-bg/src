@@ -39,7 +39,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           curl -u "${SONAR_TOKEN}:" \
-            "https://sonarcloud.io/api/issues/search?componentKeys=scon-bg&resolved=false" \
+            "https://sonarcloud.io/api/issues/search?componentKeys=scon-bg_src&resolved=false" \
             -o sonar-issues.json
 
       - name: Upload Sonar Issues Artifact
