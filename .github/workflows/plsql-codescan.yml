@@ -1,0 +1,42 @@
+name: PL/SQL Code Scanning
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 3 * * 1'   # седмичен пълен скан, по желание
+
+permissions:
+  contents: read
+  security-events: write   # нужно за качване в Security таба
+  actions: read
+
+jobs:
+  pmd-plsql:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java (изисква се от PMD)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Run PMD on PL/SQL sources
+        uses: pmd/pmd-github-action@v2
+        id: pmd
+        with:
+          version: '7.4.0'
+          sourcePath: 'src'              # пътят до твоите .sql/.pkb/.pks файлове
+          rulesets: '.pmd/plsql-ruleset.xml'
+          analyzeModifiedFilesOnly: false      # важно: пълен скан за коректна картина в Code Scanning
+
+      - name: Upload SARIF to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: pmd-report.sarif
+          category: pmd-plsql
