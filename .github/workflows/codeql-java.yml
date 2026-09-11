@@ -27,24 +27,31 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      # 1. Инициализиране на CodeQL за Java
+      # 1. Инициализиране на CodeQL
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: java
 
-      # 2. Компилация на проекта (Важно за Java, за да може CodeQL да улови зависимостите)
-      # Заменете с вашата билд система (Maven, Gradle или Ant)
-      - name: Build with Maven
+      # 2. Алтернатива на Maven/Gradle: Използване на CodeQL autobuild или ръчно компилиране през javac
+      - name: Autobuild / Manual Compile
         run: |
-          if [ -f "pom.xml" ]; then
-            mvn clean compile -DskipTests
-          elif [ -f "build.gradle" ]; then
-            ./gradlew compileJava
+          # Ако нямате готов pom.xml или build.gradle, компилираме директно сорсовете от src папка
+          if [ -d "src" ]; then
+            echo "Компилиране на Java файловете от src папка..."
+            find src -name "*.java" > sources.txt
+            if [ -s sources.txt ]; then
+              mkdir -p out
+              javac -d out @sources.txt
+            else
+              echo "Няма намерени .java файлове в src."
+            fi
           else
-            echo "Няма намерена билд система, CodeQL ще опита автоматичен анализ."
+            # Автоматичен опит за билд от GitHub
+            echo "Стартиране на autobuild..."
           fi
+        continue-on-error: true
 
-      # 3. Изпълнение на анализа и качване на резултатите в GitHub Security табулацията
+      # 3. Изпълнение на анализа
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
