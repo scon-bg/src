@@ -45,7 +45,7 @@ jobs:
         run: |
           curl -sL https://github.com/pmd/pmd/releases/download/pmd_releases%2F7.4.0/pmd-dist-7.4.0-bin.zip -o pmd.zip
           unzip -q pmd.zip
-          ./pmd-bin-7.4.0/bin/pmd check -d db/plsql -R .pmd/plsql-ruleset.xml -f html -r pmd-full-report.html || true
+          ./pmd-bin-7.4.0/bin/pmd check -d src -R .pmd/plsql-ruleset.xml -f html -r pmd-full-report.html || true
 
       - name: Upload HTML report as artifact
         uses: actions/upload-artifact@v4
