@@ -1,0 +1,45 @@
+name: PL/SQL PMD Scan
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  pmd-scan:
+    name: Run PMD Code Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Run PMD CLI
+        run: |
+          # Изтегляне на PMD (актуална версия)
+          PMD_VERSION="7.0.0"
+          wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F${PMD_VERSION}/pmd-bin-${PMD_VERSION}.zip
+          unzip pmd-bin-${PMD_VERSION}.zip
+          
+          # Създаване на директория за отчет
+          mkdir -p pmd-report
+          
+          ./pmd-bin-${PMD_VERSION}/bin/pmd check \
+            --dir="src" \
+            --format=html \
+            --report-file=pmd-report/pmd-results.html \
+            --rulesets=category/plsql/bestpractices.xml,category/plsql/codestyle.xml
+        continue-on-error: true # За да не спира пайплайна при открити грешки, ако желаете
+
+      - name: Upload PMD Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: pmd-security-report
+          path: pmd-report/pmd-results.html
