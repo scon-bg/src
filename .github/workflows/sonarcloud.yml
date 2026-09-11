@@ -48,3 +48,107 @@ jobs:
         with:
           name: sonar-issues-json
           path: sonar-issues.json
+          
+- name: Generate HTML Report
+        if: always()
+        run: |
+          python3 -c '
+          import json
+          import os
+
+          if os.path.exists("sonar-issues.json"):
+              with open("sonar-issues.json", "r", encoding="utf-8") as f:
+                  data = json.load(f)
+          else:
+              data = {"issues": []}
+
+          issues = data.get("issues", [])
+
+          html_content = f"""<!DOCTYPE html>
+          <html lang="bg">
+          <head>
+              <meta charset="UTF-8">
+              <title>SonarCloud Issues Report</title>
+              <style>
+                  body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f6f8fa; color: #24292e; margin: 0; padding: 20px; }}
+                  .container {{ max-width: 1100px; margin: auto; background: white; padding: 30px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }}
+                  h1 {{ color: #0366d6; border-bottom: 1px solid #eaecef; padding-bottom: 10px; margin-top: 0; }}
+                  .summary {{ display: flex; gap: 20px; margin-bottom: 25px; }}
+                  .card {{ background: #f1f8ff; border: 1px solid #c8e1ff; border-radius: 4px; padding: 15px; flex: 1; text-align: center; }}
+                  .card h3 {{ margin: 0 0 5px 0; font-size: 14px; color: #586069; }}
+                  .card .count {{ font-size: 24px; font-weight: bold; color: #0366d6; }}
+                  table {{ width: 100%; border-collapse: collapse; margin-top: 15px; }}
+                  th, td {{ border: 1px solid #e1e4e8; padding: 10px 12px; text-align: left; font-size: 14px; }}
+                  th {{ background-color: #f6f8fa; font-weight: 600; }}
+                  tr:nth-child(even) {{ background-color: #fafbfc; }}
+                  .badge {{ display: inline-block; padding: 3px 8px; font-size: 11px; font-weight: 600; border-radius: 3px; text-transform: uppercase; }}
+                  .severity-BLOCKER {{ background-color: #d73a49; color: white; }}
+                  .severity-CRITICAL {{ background-color: #f9826c; color: white; }}
+                  .severity-MAJOR {{ background-color: #ffd33d; color: #24292e; }}
+                  .severity-MINOR {{ background-color: #dbedff; color: #005cc5; }}
+                  .severity-INFO {{ background-color: #e1e4e8; color: #24292e; }}
+                  .footer {{ margin-top: 30px; text-align: center; font-size: 12px; color: #6a737d; border-top: 1px solid #eaecef; padding-top: 15px; }}
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <h1>📊 SonarCloud PL/SQL Анализ - Отчет за проблеми</h1>
+                  <div class="summary">
+                      <div class="card">
+                          <h3>Общо намерени проблеми</h3>
+                          <div class="count">{len(issues)}</div>
+                      </div>
+                  </div>
+                  <table>
+                      <thead>
+                          <tr>
+                              <th>Важност</th>
+                              <th>Тип</th>
+                              <th>Файл</th>
+                              <th>Ред</th>
+                              <th>Съобщение</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+          """
+
+          if not issues:
+              html_content += "<tr><td colspan=\\"5\\" style=\\"text-align: center; color: #28a745; font-weight: bold;\">Браво! Няма намерени проблеми.</td></tr>"
+          else:
+              for issue in issues:
+                  sev = issue.get("severity", "INFO")
+                  itype = issue.get("type", "CODE_SMELL")
+                  component = issue.get("component", "").split(":")[-1] # Взима само името на файла
+                  line = issue.get("line", "-")
+                  message = issue.get("message", "")
+                  
+                  html_content += f"""
+                          <tr>
+                              <td><span class="badge severity-{sev}">{sev}</span></td>
+                              <td>{itype}</td>
+                              <td><code>{component}</code></td>
+                              <td>{line}</td>
+                              <td>{message}</td>
+                          </tr>
+                  """
+
+          html_content += """
+                      </tbody>
+                  </table>
+                  <div class="footer">Генерирано автоматично от GitHub Actions и SonarCloud API</div>
+              </div>
+          </body>
+          </html>
+          """
+
+          with open("sonar-report.html", "w", encoding="utf-8") as f:
+              f.write(html_content)
+          print("HTML report generated successfully.")
+          '
+
+      - name: Upload HTML Report Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sonar-html-report
+          path: sonar-report.html
