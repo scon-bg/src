@@ -23,20 +23,20 @@ jobs:
 
       - name: Run PMD CLI
         run: |
-          # Изтегляне на PMD (актуална версия)
           PMD_VERSION="7.0.0"
-          wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F${PMD_VERSION}/pmd-bin-${PMD_VERSION}.zip
-          unzip pmd-bin-${PMD_VERSION}.zip
+          # Коригиран линк според официалния източник на PMD в GitHub
+          wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F${PMD_VERSION}/pmd-dist-${PMD_VERSION}-bin.zip
+          unzip pmd-dist-${PMD_VERSION}-bin.zip
           
-          # Създаване на директория за отчет
           mkdir -p pmd-report
           
-          ./pmd-bin-${PMD_VERSION}/bin/pmd check \
+          # Коригирано име на распакованата папка (pmd-dist-7.0.0-bin) и насочено към вашата папка src
+          ./pmd-dist-${PMD_VERSION}-bin/bin/pmd check \
             --dir="src" \
             --format=html \
             --report-file=pmd-report/pmd-results.html \
             --rulesets=category/plsql/bestpractices.xml,category/plsql/codestyle.xml
-        continue-on-error: true # За да не спира пайплайна при открити грешки, ако желаете
+        continue-on-error: true
 
       - name: Upload PMD Report
         uses: actions/upload-artifact@v4
