@@ -22,7 +22,7 @@ create or replace package body GPC_Cmd_Cust is
     INTERCONNECTED       varchar2( 1 )
   );
 
-  type tаShareholders is table of trShareholders
+  type tР°Shareholders is table of trShareholders
     index by binary_integer;
 
   type trCustomsSearchParams is record(
@@ -242,7 +242,7 @@ create or replace package body GPC_Cmd_Cust is
     bRet    := dbms_lock.REQUEST( handle, dbms_lock.X_MODE, 0 ) = 0;
 
     if ( bRet ) then
-      Schema_RA.GPC_RA.RespSetErrorText( 'Некоректни входни параметри', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+      Schema_RA.GPC_RA.RespSetErrorText( 'РќРµРєРѕСЂРµРєС‚РЅРё РІС…РѕРґРЅРё РїР°СЂР°РјРµС‚СЂРё', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
       oDoc                                   := Schema_GPSys.DocSysIQType( );
       nDocLevel                              := 1;
       nState                                 := 0;
@@ -256,7 +256,7 @@ create or replace package body GPC_Cmd_Cust is
         if ( bRet ) then
           sCmdName  := 'CustSave';
 
-          if ( nRowType = 1 ) then -- общи данни
+          if ( nRowType = 1 ) then -- РѕР±С‰Рё РґР°РЅРЅРё
             bRet       := nState = 0 and
                           aRowValues.count >= 13 and
                           Schema_GPSys.GPC_Parser.ReadString( aRowValues( 1 ), sOper ) and
@@ -402,43 +402,43 @@ create or replace package body GPC_Cmd_Cust is
               bDummy    := Schema_GPSys.OraGPSys.AddDocRowFromCmdNumber( oDoc, sCmdName, '1.ChOper', nDocLevel, Schema_RA.GPC_RA.nCurrentUserID );
               bDummy    := Schema_GPSys.OraGPSys.AddDocRowFromCmdNumber( oDoc, sCmdName, '1.Employer', nDocLevel, rCust.Employer );
               bDummy    := Schema_GPSys.OraGPSys.AddDocRowFromCmdString( oDoc, sCmdName, '1.Ext_Number', nDocLevel, rCust.EXT_NUMBER );
-              bDummy    := Schema_GPSys.OraGPSys.AddDocRowFromCmdMoney( oDoc, sCmdName, '1.ПривлеченРесурс', nDocLevel, rCust.PRIVRES_VAL, rCust.PRIVRES_AMN );
-              bDummy    := Schema_GPSys.OraGPSys.AddDocRowFromCmdString( oDoc, sCmdName, '1.Сегмент', nDocLevel, rCust.CUST_SEGMENT );
-              bDummy    := Schema_GPSys.OraGPSys.AddDocRowFromCmdString( oDoc, sCmdName, '1.ПрофитЦентър', nDocLevel, rCust.PROFIT_CENTER );
+              bDummy    := Schema_GPSys.OraGPSys.AddDocRowFromCmdMoney( oDoc, sCmdName, '1.РџСЂРёРІР»РµС‡РµРЅР РµСЃСѓСЂСЃ', nDocLevel, rCust.PRIVRES_VAL, rCust.PRIVRES_AMN );
+              bDummy    := Schema_GPSys.OraGPSys.AddDocRowFromCmdString( oDoc, sCmdName, '1.РЎРµРіРјРµРЅС‚', nDocLevel, rCust.CUST_SEGMENT );
+              bDummy    := Schema_GPSys.OraGPSys.AddDocRowFromCmdString( oDoc, sCmdName, '1.РџСЂРѕС„РёС‚Р¦РµРЅС‚СЉСЂ', nDocLevel, rCust.PROFIT_CENTER );
               bDummy    := Schema_GPSys.OraGPSys.AddDocRowFromCmdNumber( oDoc, sCmdName, '1.RelationshipManager', nDocLevel, rCust.RELATIONSHIPMGR );
               bDummy    := Schema_GPSys.OraGPSys.AddDocRowFromCmdString( oDoc, sCmdName, '1.DDS_VIN', nDocLevel, rCust.DDS_VIN );
 
               if ( aRowValues.exists( 14 ) ) then
-                bDummy  := Schema_GPSys.OraGPSys.AddDocRowFromCmdString( oDoc, sCmdName, '1.Активен', nDocLevel, nvl( rCust.fldACTIVE, GPC_Customs.CustStat_Activen ) );
+                bDummy  := Schema_GPSys.OraGPSys.AddDocRowFromCmdString( oDoc, sCmdName, '1.РђРєС‚РёРІРµРЅ', nDocLevel, nvl( rCust.fldACTIVE, GPC_Customs.CustStat_Activen ) );
               else
                 if ( sOper = 'NEW' ) then
-                  bDummy  := Schema_GPSys.OraGPSys.AddDocRowFromCmdString( oDoc, sCmdName, '1.Активен', nDocLevel, GPC_Customs.CustStat_Activen );
+                  bDummy  := Schema_GPSys.OraGPSys.AddDocRowFromCmdString( oDoc, sCmdName, '1.РђРєС‚РёРІРµРЅ', nDocLevel, GPC_Customs.CustStat_Activen );
                 end if;
               end if;
 
               if ( aRowValues.exists( 20 ) ) then
-                bDummy  := Schema_GPSys.OraGPSys.AddDocRowFromCmdDate( oDoc, sCmdName, '1.Дата на преглед', nDocLevel, rCust.PREGLED_DATE );
-                bDummy  := Schema_GPSys.OraGPSys.AddDocRowFromCmdDate( oDoc, sCmdName, '1.Дата на мониторинг', nDocLevel, rCust.MON_DATE );
-                bDummy  := Schema_GPSys.OraGPSys.AddDocRowFromCmdNumber( oDoc, sCmdName, '1.Рейтинг', nDocLevel, rCust.RATING );
-                bDummy  := Schema_GPSys.OraGPSys.AddDocRowFromCmdString( oDoc, sCmdName, '1.Тип на рейтинга', nDocLevel, rCust.RATING_TYPE );
-                bDummy  := Schema_GPSys.OraGPSys.AddDocRowFromCmdString( oDoc, sCmdName, '1.Вид мониторинг', nDocLevel, rCust.MON_TYPE );
-                bDummy  := Schema_GPSys.OraGPSys.AddDocRowFromCmdString( oDoc, sCmdName, '1.Риск сегментация', nDocLevel, rCust.RISK_SEG );
+                bDummy  := Schema_GPSys.OraGPSys.AddDocRowFromCmdDate( oDoc, sCmdName, '1.Р”Р°С‚Р° РЅР° РїСЂРµРіР»РµРґ', nDocLevel, rCust.PREGLED_DATE );
+                bDummy  := Schema_GPSys.OraGPSys.AddDocRowFromCmdDate( oDoc, sCmdName, '1.Р”Р°С‚Р° РЅР° РјРѕРЅРёС‚РѕСЂРёРЅРі', nDocLevel, rCust.MON_DATE );
+                bDummy  := Schema_GPSys.OraGPSys.AddDocRowFromCmdNumber( oDoc, sCmdName, '1.Р РµР№С‚РёРЅРі', nDocLevel, rCust.RATING );
+                bDummy  := Schema_GPSys.OraGPSys.AddDocRowFromCmdString( oDoc, sCmdName, '1.РўРёРї РЅР° СЂРµР№С‚РёРЅРіР°', nDocLevel, rCust.RATING_TYPE );
+                bDummy  := Schema_GPSys.OraGPSys.AddDocRowFromCmdString( oDoc, sCmdName, '1.Р’РёРґ РјРѕРЅРёС‚РѕСЂРёРЅРі', nDocLevel, rCust.MON_TYPE );
+                bDummy  := Schema_GPSys.OraGPSys.AddDocRowFromCmdString( oDoc, sCmdName, '1.Р РёСЃРє СЃРµРіРјРµРЅС‚Р°С†РёСЏ', nDocLevel, rCust.RISK_SEG );
               end if;
 
               if ( aRowValues.exists( 21 ) ) then
-                bDummy  := Schema_GPSys.OraGPSys.AddDocRowFromCmdString( oDoc, sCmdName, '1.Тип управление', nDocLevel, rCust.RISK_MANAGEMENT );
+                bDummy  := Schema_GPSys.OraGPSys.AddDocRowFromCmdString( oDoc, sCmdName, '1.РўРёРї СѓРїСЂР°РІР»РµРЅРёРµ', nDocLevel, rCust.RISK_MANAGEMENT );
               end if;
 
               if ( aRowValues.exists( 22 ) ) then
-                bDummy  := Schema_GPSys.OraGPSys.AddDocRowFromCmdNumber( oDoc, sCmdName, '1.Риск мениджър', nDocLevel, rCust.RISK_MANAGER );
+                bDummy  := Schema_GPSys.OraGPSys.AddDocRowFromCmdNumber( oDoc, sCmdName, '1.Р РёСЃРє РјРµРЅРёРґР¶СЉСЂ', nDocLevel, rCust.RISK_MANAGER );
               end if;
 
               if ( aRowValues.exists( 23 ) ) then
-                bDummy  := Schema_GPSys.OraGPSys.AddDocRowFromCmdString( oDoc, sCmdName, '1.Ръчно управление ТУ', nDocLevel, rCust.HAND_RISK_MANAGE );
+                bDummy  := Schema_GPSys.OraGPSys.AddDocRowFromCmdString( oDoc, sCmdName, '1.Р СЉС‡РЅРѕ СѓРїСЂР°РІР»РµРЅРёРµ РўРЈ', nDocLevel, rCust.HAND_RISK_MANAGE );
               end if;
 
               if ( aRowValues.exists( 24 ) ) then
-                bDummy  := Schema_GPSys.OraGPSys.AddDocRowFromCmdString( oDoc, sCmdName, '1.Класове експозиции', nDocLevel, rCust.EXPO_CLASS );
+                bDummy  := Schema_GPSys.OraGPSys.AddDocRowFromCmdString( oDoc, sCmdName, '1.РљР»Р°СЃРѕРІРµ РµРєСЃРїРѕР·РёС†РёРё', nDocLevel, rCust.EXPO_CLASS );
               end if;
 
               if ( aRowValues.exists( 25 ) ) then
@@ -506,7 +506,7 @@ create or replace package body GPC_Cmd_Cust is
             end if;
           elsif ( nRowType = 2 or
                  nRowType = 3 or
-                 nRowType = 4 ) then -- гражданин/фирма/банка
+                 nRowType = 4 ) then -- РіСЂР°Р¶РґР°РЅРёРЅ/С„РёСЂРјР°/Р±Р°РЅРєР°
             bRet    := nState = 1;
 
             if ( nRowType = 2 ) then
@@ -524,7 +524,7 @@ create or replace package body GPC_Cmd_Cust is
             end if;
 
             nState  := nRowType;
-          elsif ( nRowType = 5 ) then -- кл.номера
+          elsif ( nRowType = 5 ) then -- РєР».РЅРѕРјРµСЂР°
             bRet         := ( sOper = 'EDT' and
                              nState = 1 ) or
                             nState = 2 or
@@ -535,7 +535,7 @@ create or replace package body GPC_Cmd_Cust is
             AddIDCustChOperRows( oDoc, sCmdName, sOper, nRowType, nState, nDocLevel, nDocList, rCust.id, nNumDocType, nNumFldType );
             nDocNumList  := nDocList;
             nState       := nRowType;
-          elsif ( nRowType = 6 ) then -- представители
+          elsif ( nRowType = 6 ) then -- РїСЂРµРґСЃС‚Р°РІРёС‚РµР»Рё
             bRet      := ( sOper = 'EDT' and
                           nState = 1 ) or
                          nState = 2 or
@@ -546,7 +546,7 @@ create or replace package body GPC_Cmd_Cust is
             sCmdName  := sCmdName || 'Repres';
             AddIDCustChOperRows( oDoc, sCmdName, sOper, nRowType, nState, nDocLevel, nDocList, rCust.id, nRepDocType, nRepFldType );
             nState    := nRowType;
-          elsif ( nRowType = 7 ) then -- пълномощници
+          elsif ( nRowType = 7 ) then -- РїСЉР»РЅРѕРјРѕС‰РЅРёС†Рё
             bRet      := ( sOper = 'EDT' and
                           nState = 1 ) or
                          nState = 2 or
@@ -558,7 +558,7 @@ create or replace package body GPC_Cmd_Cust is
             sCmdName  := sCmdName || 'Proxy';
             AddIDCustChOperRows( oDoc, sCmdName, sOper, nRowType, nState, nDocLevel, nDocList, rCust.id, nPxyDocType, nPxyFldType );
             nState    := nRowType;
-          elsif ( nRowType = 8 ) then -- лица за контакт
+          elsif ( nRowType = 8 ) then -- Р»РёС†Р° Р·Р° РєРѕРЅС‚Р°РєС‚
             bRet      := ( sOper = 'EDT' and
                           nState = 1 ) or
                          nState = 2 or
@@ -571,7 +571,7 @@ create or replace package body GPC_Cmd_Cust is
             sCmdName  := sCmdName || 'Contact';
             AddIDCustChOperRows( oDoc, sCmdName, sOper, nRowType, nState, nDocLevel, nDocList, rCust.id, nCntDocType, nCntFldType );
             nState    := nRowType;
-          elsif ( nRowType = 9 ) then -- свързани лица
+          elsif ( nRowType = 9 ) then -- СЃРІСЉСЂР·Р°РЅРё Р»РёС†Р°
             bRet      := ( sOper = 'EDT' and
                           nState = 1 ) or
                          nState = 2 or
@@ -585,7 +585,7 @@ create or replace package body GPC_Cmd_Cust is
             sCmdName  := sCmdName || 'Link';
             AddIDCustChOperRows( oDoc, sCmdName, sOper, nRowType, nState, nDocLevel, nDocList, rCust.id, nLnkDocType, nLnkFldType );
             nState    := nRowType;
-          elsif ( nRowType = 10 ) then -- кодове по МФ
+          elsif ( nRowType = 10 ) then -- РєРѕРґРѕРІРµ РїРѕ РњР¤
             bRet      := ( sOper = 'EDT' and
                           nState = 1 ) or
                          nState = 2 or
@@ -600,7 +600,7 @@ create or replace package body GPC_Cmd_Cust is
             sCmdName  := sCmdName || 'Code';
             AddIDCustChOperRows( oDoc, sCmdName, sOper, nRowType, nState, nDocLevel, nDocList, rCust.id, nCodeDocType, nCodeFldType );
             nState    := nRowType;
-          elsif ( nRowType = 11 ) then -- графична информация
+          elsif ( nRowType = 11 ) then -- РіСЂР°С„РёС‡РЅР° РёРЅС„РѕСЂРјР°С†РёСЏ
             bRet      := ( sOper = 'EDT' and
                           nState = 1 ) or
                          nState = 2 or
@@ -616,9 +616,9 @@ create or replace package body GPC_Cmd_Cust is
             sCmdName  := sCmdName || 'Pic';
             AddIDCustChOperRows( oDoc, sCmdName, sOper, nRowType, nState, nDocLevel, nDocList, rCust.id, nPicDocType, nPicFldType );
             nState    := nRowType;
-          elsif ( nRowType = 12 ) then -- общи данни
+          elsif ( nRowType = 12 ) then -- РѕР±С‰Рё РґР°РЅРЅРё
             sCmdName  := sCmdName || sOper;
-          elsif ( nRowType = 13 ) then -- акционери
+          elsif ( nRowType = 13 ) then -- Р°РєС†РёРѕРЅРµСЂРё
             bRet      := ( sOper = 'EDT' and
                           nState = 1 ) or
                          nState = 2 or
@@ -635,7 +635,7 @@ create or replace package body GPC_Cmd_Cust is
             sCmdName  := sCmdName || 'Stock';
             AddIDCustChOperRows( oDoc, sCmdName, sOper, nRowType, nState, nDocLevel, nDocList, rCust.id, nStockDocType, nStockFldType );
             nState    := nRowType;
-          elsif ( nRowType = 14 ) then -- контрагенти и конкуренти
+          elsif ( nRowType = 14 ) then -- РєРѕРЅС‚СЂР°РіРµРЅС‚Рё Рё РєРѕРЅРєСѓСЂРµРЅС‚Рё
             bRet      := ( sOper = 'EDT' and
                           nState = 1 ) or
                          nState = 2 or
@@ -653,7 +653,7 @@ create or replace package body GPC_Cmd_Cust is
             sCmdName  := sCmdName || 'Rival';
             AddIDCustChOperRows( oDoc, sCmdName, sOper, nRowType, nState, nDocLevel, nDocList, rCust.id, nRivalDocType, nRivalFldType );
             nState    := nRowType;
-          elsif ( nRowType = 15 ) then -- поръчители
+          elsif ( nRowType = 15 ) then -- РїРѕСЂСЉС‡РёС‚РµР»Рё
             bRet      := ( sOper = 'EDT' and
                           nState = 1 ) or
                          nState = 2 or
@@ -672,7 +672,7 @@ create or replace package body GPC_Cmd_Cust is
             sCmdName  := sCmdName || 'Voucher';
             AddIDCustChOperRows( oDoc, sCmdName, sOper, nRowType, nState, nDocLevel, nDocList, rCust.id, nVoucherDocType, nVoucherFldType );
             nState    := nRowType;
-          elsif ( nRowType = 16 ) then -- работодатели
+          elsif ( nRowType = 16 ) then -- СЂР°Р±РѕС‚РѕРґР°С‚РµР»Рё
             bRet      := ( sOper = 'EDT' and
                           nState = 1 ) or
                          nState = 2 or
@@ -692,7 +692,7 @@ create or replace package body GPC_Cmd_Cust is
             sCmdName  := sCmdName || 'Worker';
             AddIDCustChOperRows( oDoc, sCmdName, sOper, nRowType, nState, nDocLevel, nDocList, rCust.id, nWorkerDocType, nWorkerFldType );
             nState    := nRowType;
-          elsif ( nRowType = 17 ) then -- списък с адреси
+          elsif ( nRowType = 17 ) then -- СЃРїРёСЃСЉРє СЃ Р°РґСЂРµСЃРё
             bRet      := nState = 1 or
                          nState = 2 or
                          nState = 3 or
@@ -712,7 +712,7 @@ create or replace package body GPC_Cmd_Cust is
             sCmdName  := sCmdName || 'Addresses';
             AddIDCustChOperRows( oDoc, sCmdName, sOper, nRowType, nState, nDocLevel, nDocList, rCust.id, nAddressDocType, nAddressFldType );
             nState    := nRowType;
-          elsif ( nRowType = 18 ) then -- системна информация (таблица)
+          elsif ( nRowType = 18 ) then -- СЃРёСЃС‚РµРјРЅР° РёРЅС„РѕСЂРјР°С†РёСЏ (С‚Р°Р±Р»РёС†Р°)
             bRet      := nState = 1 or
                          nState = 2 or
                          nState = 3 or
@@ -733,7 +733,7 @@ create or replace package body GPC_Cmd_Cust is
             sCmdName  := sCmdName || 'DopInfo';
             AddIDCustChOperRows( oDoc, sCmdName, sOper, nRowType, nState, nDocLevel, nDocList, rCust.id, nDopInfoDocType, nDopInfoFldType );
             nState    := nRowType;
-          elsif ( nRowType = 19 ) then -- Списък роли
+          elsif ( nRowType = 19 ) then -- РЎРїРёСЃСЉРє СЂРѕР»Рё
             bRet      := Schema_GPSys.GPC_Parser.ReadString( aRowValues( 1 ), sRole ) and
                          Schema_GPSys.GPC_Parser.ReadString( aRowValues( 2 ), sDeinost ) and
                          true;
@@ -741,13 +741,13 @@ create or replace package body GPC_Cmd_Cust is
             if ( sRole is null and
                 sDeinost is null ) then
               bRet  := false;
-              Schema_RA.GPC_RA.RespSetErrorText( 'Не са избрани стойности за роля/дейност', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+              Schema_RA.GPC_RA.RespSetErrorText( 'РќРµ СЃР° РёР·Р±СЂР°РЅРё СЃС‚РѕР№РЅРѕСЃС‚Рё Р·Р° СЂРѕР»СЏ/РґРµР№РЅРѕСЃС‚', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
             else
               sRole  := lpad( nvl( sRole, '0' ), 20, '0' ) || lpad( nvl( sDeinost, '0' ), 20, '0' );
 
               if ( aCustRoles.exists( sRole ) ) then
                 bRet  := false;
-                Schema_RA.GPC_RA.RespSetErrorText( 'Дублирана комбинация роля/дейност', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+                Schema_RA.GPC_RA.RespSetErrorText( 'Р”СѓР±Р»РёСЂР°РЅР° РєРѕРјР±РёРЅР°С†РёСЏ СЂРѕР»СЏ/РґРµР№РЅРѕСЃС‚', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
               else
                 aCustRoles( sRole )  := 'T';
               end if;
@@ -776,7 +776,7 @@ create or replace package body GPC_Cmd_Cust is
               AddIDCustChOperRows( oDoc, sCmdName, sOper, nRowType, nState, nDocLevel, nDocList, rCust.id, nRolesDocType, nRolesFldType );
               nState    := nRowType;
             end if;
-          elsif ( nRowType = 20 ) then -- Данъчна информация
+          elsif ( nRowType = 20 ) then -- Р”Р°РЅСЉС‡РЅР° РёРЅС„РѕСЂРјР°С†РёСЏ
             bRet      := nState = 1 or
                          nState = 2 or
                          nState = 3 or
@@ -798,7 +798,7 @@ create or replace package body GPC_Cmd_Cust is
             sCmdName  := sCmdName || 'DanInfo';
             AddIDCustChOperRows( oDoc, sCmdName, sOper, nRowType, nState, nDocLevel, nDocList, rCust.id, nDanInfoDocType, nDanInfoFldType );
             nState    := nRowType;
-          elsif ( nRowType = 21 ) then -- Автоматичен обмен - Държави
+          elsif ( nRowType = 21 ) then -- РђРІС‚РѕРјР°С‚РёС‡РµРЅ РѕР±РјРµРЅ - Р”СЉСЂР¶Р°РІРё
             bRet      := nState = 1 or
                          nState = 2 or
                          nState = 3 or
@@ -821,7 +821,7 @@ create or replace package body GPC_Cmd_Cust is
             sCmdName  := sCmdName || 'AECountry';
             AddIDCustChOperRows( oDoc, sCmdName, sOper, nRowType, nState, nDocLevel, nDocList, rCust.id, nAECountryDocType, nAECountryFldType );
             nState    := nRowType;
-          elsif ( nRowType = 22 ) then -- Автоматичен обмен - Данъчна информация
+          elsif ( nRowType = 22 ) then -- РђРІС‚РѕРјР°С‚РёС‡РµРЅ РѕР±РјРµРЅ - Р”Р°РЅСЉС‡РЅР° РёРЅС„РѕСЂРјР°С†РёСЏ
             bRet      := nState = 1 or
                          nState = 2 or
                          nState = 3 or
@@ -845,7 +845,7 @@ create or replace package body GPC_Cmd_Cust is
             sCmdName  := sCmdName || 'AEDanInfo';
             AddIDCustChOperRows( oDoc, sCmdName, sOper, nRowType, nState, nDocLevel, nDocList, rCust.id, nAEDanInfoDocType, nAEDanInfoFldType );
             nState    := nRowType;
-          elsif ( nRowType = 23 ) then -- Автоматичен обмен - Контролиращи лица
+          elsif ( nRowType = 23 ) then -- РђРІС‚РѕРјР°С‚РёС‡РµРЅ РѕР±РјРµРЅ - РљРѕРЅС‚СЂРѕР»РёСЂР°С‰Рё Р»РёС†Р°
             bRet      := nState = 1 or
                          nState = 2 or
                          nState = 3 or
@@ -870,7 +870,7 @@ create or replace package body GPC_Cmd_Cust is
             sCmdName  := sCmdName || 'AEControlPers';
             AddIDCustChOperRows( oDoc, sCmdName, sOper, nRowType, nState, nDocLevel, nDocList, rCust.id, nAEControlPersDocType, nAEControlPersFldType );
             nState    := nRowType;
-          elsif ( nRowType = 24 ) then -- Списък IBAN
+          elsif ( nRowType = 24 ) then -- РЎРїРёСЃСЉРє IBAN
             bRet      := nState = 1 or
                          nState = 2 or
                          nState = 3 or
@@ -896,7 +896,7 @@ create or replace package body GPC_Cmd_Cust is
             sCmdName  := sCmdName || 'IBANs';
             AddIDCustChOperRows( oDoc, sCmdName, sOper, nRowType, nState, nDocLevel, nDocList, rCust.id, nIBANsDocType, nIBANsFldType );
             nState    := nRowType;
-          elsif ( nRowType = 25 ) then -- Списък URL
+          elsif ( nRowType = 25 ) then -- РЎРїРёСЃСЉРє URL
             bRet      := nState = 1 or
                          nState = 2 or
                          nState = 3 or
@@ -923,7 +923,7 @@ create or replace package body GPC_Cmd_Cust is
             sCmdName  := sCmdName || 'URLs';
             AddIDCustChOperRows( oDoc, sCmdName, sOper, nRowType, nState, nDocLevel, nDocList, rCust.id, nURLsDocType, nURLsFldType );
             nState    := nRowType;
-          elsif ( nRowType = 26 ) then -- АнаКредит
+          elsif ( nRowType = 26 ) then -- РђРЅР°РљСЂРµРґРёС‚
             bRet           := bRet and
                               Schema_GPSys.GPC_Parser.SplitParams( aParamEntities3D( ii ).sValue, aRowValues ) and
                               aRowValues.count >= 13 and
@@ -951,39 +951,39 @@ create or replace package body GPC_Cmd_Cust is
           if ( nRowType = 12 and
               aRowValues( jj ) is not null and
               sOper = 'EDT' ) then
-            if ( aRowValues( jj ) = 1 ) then -- Представители
+            if ( aRowValues( jj ) = 1 ) then -- РџСЂРµРґСЃС‚Р°РІРёС‚РµР»Рё
               bRet  := Schema_GPSys.OraGPSys.AddDocRowFromCmd( oDoc, sCmdName, 1 || '.' || 'Repres', 1, null, bDummy );
-            elsif ( aRowValues( jj ) = 2 ) then -- Пълномощници
+            elsif ( aRowValues( jj ) = 2 ) then -- РџСЉР»РЅРѕРјРѕС‰РЅРёС†Рё
               bRet  := Schema_GPSys.OraGPSys.AddDocRowFromCmd( oDoc, sCmdName, 1 || '.' || 'Proxy', 1, null, bDummy );
-            elsif ( aRowValues( jj ) = 3 ) then -- Лица за контакт
+            elsif ( aRowValues( jj ) = 3 ) then -- Р›РёС†Р° Р·Р° РєРѕРЅС‚Р°РєС‚
               bRet  := Schema_GPSys.OraGPSys.AddDocRowFromCmd( oDoc, sCmdName, 1 || '.' || 'Contact', 1, null, bDummy );
-            elsif ( aRowValues( jj ) = 4 ) then -- Свързани лица
+            elsif ( aRowValues( jj ) = 4 ) then -- РЎРІСЉСЂР·Р°РЅРё Р»РёС†Р°
               bRet  := Schema_GPSys.OraGPSys.AddDocRowFromCmd( oDoc, sCmdName, 1 || '.' || 'Link', 1, null, bDummy );
-            elsif ( aRowValues( jj ) = 5 ) then -- Графична информация
+            elsif ( aRowValues( jj ) = 5 ) then -- Р“СЂР°С„РёС‡РЅР° РёРЅС„РѕСЂРјР°С†РёСЏ
               bRet  := Schema_GPSys.OraGPSys.AddDocRowFromCmd( oDoc, sCmdName, 1 || '.' || 'Pic', 1, null, bDummy );
-            elsif ( aRowValues( jj ) = 6 ) then -- Код
+            elsif ( aRowValues( jj ) = 6 ) then -- РљРѕРґ
               bRet  := Schema_GPSys.OraGPSys.AddDocRowFromCmd( oDoc, sCmdName, 1 || '.' || 'Code', 1, null, bDummy );
-            elsif ( aRowValues( jj ) = 7 ) then -- Акционер
+            elsif ( aRowValues( jj ) = 7 ) then -- РђРєС†РёРѕРЅРµСЂ
               bRet  := Schema_GPSys.OraGPSys.AddDocRowFromCmd( oDoc, sCmdName, 1 || '.' || 'Stock', 1, null, bDummy );
-            elsif ( aRowValues( jj ) = 8 ) then -- Контрагент конкурент
+            elsif ( aRowValues( jj ) = 8 ) then -- РљРѕРЅС‚СЂР°РіРµРЅС‚ РєРѕРЅРєСѓСЂРµРЅС‚
               bRet  := Schema_GPSys.OraGPSys.AddDocRowFromCmd( oDoc, sCmdName, 1 || '.' || 'Rival', 1, null, bDummy );
-            elsif ( aRowValues( jj ) = 9 ) then -- Поръчител
+            elsif ( aRowValues( jj ) = 9 ) then -- РџРѕСЂСЉС‡РёС‚РµР»
               bRet  := Schema_GPSys.OraGPSys.AddDocRowFromCmd( oDoc, sCmdName, 1 || '.' || 'Voucher', 1, null, bDummy );
-            elsif ( aRowValues( jj ) = 10 ) then -- Работодател
+            elsif ( aRowValues( jj ) = 10 ) then -- Р Р°Р±РѕС‚РѕРґР°С‚РµР»
               bRet  := Schema_GPSys.OraGPSys.AddDocRowFromCmd( oDoc, sCmdName, 1 || '.' || 'Worker', 1, null, bDummy );
-            elsif ( aRowValues( jj ) = 11 ) then -- Роли
+            elsif ( aRowValues( jj ) = 11 ) then -- Р РѕР»Рё
               bRet  := Schema_GPSys.OraGPSys.AddDocRowFromCmd( oDoc, sCmdName, 1 || '.' || 'Roles', 1, null, bDummy );
-            elsif ( aRowValues( jj ) = 12 ) then -- Данъчна информация
+            elsif ( aRowValues( jj ) = 12 ) then -- Р”Р°РЅСЉС‡РЅР° РёРЅС„РѕСЂРјР°С†РёСЏ
               bRet  := Schema_GPSys.OraGPSys.AddDocRowFromCmd( oDoc, sCmdName, 1 || '.' || 'DanInfo', 1, null, bDummy );
-            elsif ( aRowValues( jj ) = 13 ) then -- Автоматичен обмен - Държави
+            elsif ( aRowValues( jj ) = 13 ) then -- РђРІС‚РѕРјР°С‚РёС‡РµРЅ РѕР±РјРµРЅ - Р”СЉСЂР¶Р°РІРё
               bRet  := Schema_GPSys.OraGPSys.AddDocRowFromCmd( oDoc, sCmdName, 1 || '.' || 'AECountry', 1, null, bDummy );
-            elsif ( aRowValues( jj ) = 14 ) then -- Автоматичен обмен - Данъчна информация
+            elsif ( aRowValues( jj ) = 14 ) then -- РђРІС‚РѕРјР°С‚РёС‡РµРЅ РѕР±РјРµРЅ - Р”Р°РЅСЉС‡РЅР° РёРЅС„РѕСЂРјР°С†РёСЏ
               bRet  := Schema_GPSys.OraGPSys.AddDocRowFromCmd( oDoc, sCmdName, 1 || '.' || 'AEDanInfo', 1, null, bDummy );
-            elsif ( aRowValues( jj ) = 15 ) then -- Автоматичен обмен - Контролиращи лица
+            elsif ( aRowValues( jj ) = 15 ) then -- РђРІС‚РѕРјР°С‚РёС‡РµРЅ РѕР±РјРµРЅ - РљРѕРЅС‚СЂРѕР»РёСЂР°С‰Рё Р»РёС†Р°
               bRet  := Schema_GPSys.OraGPSys.AddDocRowFromCmd( oDoc, sCmdName, 1 || '.' || 'AEControlPers', 1, null, bDummy );
-            elsif ( aRowValues( jj ) = 16 ) then -- Списък IBAN
+            elsif ( aRowValues( jj ) = 16 ) then -- РЎРїРёСЃСЉРє IBAN
               bRet  := Schema_GPSys.OraGPSys.AddDocRowFromCmd( oDoc, sCmdName, 1 || '.' || 'IBANList', 1, null, bDummy );
-            elsif ( aRowValues( jj ) = 17 ) then -- Списък URL
+            elsif ( aRowValues( jj ) = 17 ) then -- РЎРїРёСЃСЉРє URL
               bRet  := Schema_GPSys.OraGPSys.AddDocRowFromCmd( oDoc, sCmdName, 1 || '.' || 'URLs', 1, null, bDummy );
             end if;
           end if;
@@ -999,7 +999,7 @@ create or replace package body GPC_Cmd_Cust is
                   nCustIDPos  := oDoc.count;
                   rCust.id    := oDoc( nCustIDPos ).nv;
                 end if;
-              elsif ( nRowType = 2 ) then -- гражданин
+              elsif ( nRowType = 2 ) then -- РіСЂР°Р¶РґР°РЅРёРЅ
                 if ( jj = 1 ) then
                   rCust.EGN  := oDoc( oDoc.count ).sv;
                 elsif ( jj = 2 ) then
@@ -1041,7 +1041,7 @@ create or replace package body GPC_Cmd_Cust is
                 elsif ( jj = 129 ) then
                   rCust.BG_CARD_NO  := oDoc( oDoc.count ).sv;
                 end if;
-              elsif ( nRowType = 3 ) then -- фирма
+              elsif ( nRowType = 3 ) then -- С„РёСЂРјР°
                 if ( jj = 1 ) then
                   rCust.FIRSTNAME  := oDoc( oDoc.count ).sv;
                 elsif ( jj = 3 ) then
@@ -1065,7 +1065,7 @@ create or replace package body GPC_Cmd_Cust is
                 elsif ( jj = 96 ) then
                   rCust.INST_SECTOR  := oDoc( oDoc.count ).sv;
                 end if;
-              elsif ( nRowType = 4 ) then -- банка
+              elsif ( nRowType = 4 ) then -- Р±Р°РЅРєР°
                 if ( jj = 1 ) then
                   rCust.FIRSTNAME  := oDoc( oDoc.count ).sv;
                 elsif ( jj = 2 ) then
@@ -1122,7 +1122,7 @@ create or replace package body GPC_Cmd_Cust is
 
       if ( bRet and
           bChkInBase and
-          Schema_GPSys.OraGPSys.Str2Boolean( Schema_GPSys.OraGPSys.GetIniValueInt( Schema_GPSys.OraGPSys.defUniqCode_All, 'CUSTOMS', 'CHKINBASE', 'T' ) ) ) then -- проверка за клиент с такива данни
+          Schema_GPSys.OraGPSys.Str2Boolean( Schema_GPSys.OraGPSys.GetIniValueInt( Schema_GPSys.OraGPSys.defUniqCode_All, 'CUSTOMS', 'CHKINBASE', 'T' ) ) ) then -- РїСЂРѕРІРµСЂРєР° Р·Р° РєР»РёРµРЅС‚ СЃ С‚Р°РєРёРІР° РґР°РЅРЅРё
         bDummy  := sOper = 'NEW';
         $if ( Schema_GPSys.OraSys.VerBankUnion or
              Schema_GPSys.OraSys.VerBankDBank or
@@ -1235,7 +1235,7 @@ create or replace package body GPC_Cmd_Cust is
                        not GPC_Customs.IsCustomerExist( 'BIC', rCust.BIC, nvl( nUniqCode, 0 ), nMainCode, true, aIDs, nvl( rCust.id, 0 ), 'CUSTOMS', 'ID', nSkipInactCust = 1 );
 
           if ( not bRet ) then
-            Schema_RA.GPC_RA.RespSetErrorText( 'Клиентът вече съществува в базата', Schema_GPSys.MLng.ctxCustomers, Schema_GPSys.MLng.lngBG );
+            Schema_RA.GPC_RA.RespSetErrorText( 'РљР»РёРµРЅС‚СЉС‚ РІРµС‡Рµ СЃСЉС‰РµСЃС‚РІСѓРІР° РІ Р±Р°Р·Р°С‚Р°', Schema_GPSys.MLng.ctxCustomers, Schema_GPSys.MLng.lngBG );
           end if;
         end if;
       end if;
@@ -1254,7 +1254,7 @@ create or replace package body GPC_Cmd_Cust is
             aParams( 1 ).ML_VALUE  := to_char( nUniqCode );
             aParams( 2 ).ML_NAME   := 'CUST_NO';
             aParams( 2 ).ML_VALUE  := to_char( nCustNo );
-            Schema_RA.GPC_RA.RespSetErrorText( 'Клиентският номер не отговаря на диапазона $UNIQCODE$ $CUST_NO$',
+            Schema_RA.GPC_RA.RespSetErrorText( 'РљР»РёРµРЅС‚СЃРєРёСЏС‚ РЅРѕРјРµСЂ РЅРµ РѕС‚РіРѕРІР°СЂСЏ РЅР° РґРёР°РїР°Р·РѕРЅР° $UNIQCODE$ $CUST_NO$',
                                                Schema_GPSys.MLng.ctxCustomers,
                                                Schema_GPSys.MLng.lngBG,
                                                aParams
@@ -1266,7 +1266,7 @@ create or replace package body GPC_Cmd_Cust is
           aParams( 1 ).ML_VALUE  := to_char( nUniqCode );
           aParams( 2 ).ML_NAME   := 'CUST_NO';
           aParams( 2 ).ML_VALUE  := to_char( nCustNo );
-          Schema_RA.GPC_RA.RespSetErrorText( 'Клиентският номер вече съществува в базата $UNIQCODE$ $CUST_NO$',
+          Schema_RA.GPC_RA.RespSetErrorText( 'РљР»РёРµРЅС‚СЃРєРёСЏС‚ РЅРѕРјРµСЂ РІРµС‡Рµ СЃСЉС‰РµСЃС‚РІСѓРІР° РІ Р±Р°Р·Р°С‚Р° $UNIQCODE$ $CUST_NO$',
                                              Schema_GPSys.MLng.ctxCustomers,
                                              Schema_GPSys.MLng.lngBG,
                                              aParams
@@ -1289,7 +1289,7 @@ create or replace package body GPC_Cmd_Cust is
           aParams.delete;
           aParams( 1 ).ML_NAME   := 'EXT_NUMBER';
           aParams( 1 ).ML_VALUE  := rCust.EXT_NUMBER;
-          Schema_RA.GPC_RA.RespSetErrorText( 'Външният номер вече съществува в базата $EXT_NUMBER$',
+          Schema_RA.GPC_RA.RespSetErrorText( 'Р’СЉРЅС€РЅРёСЏС‚ РЅРѕРјРµСЂ РІРµС‡Рµ СЃСЉС‰РµСЃС‚РІСѓРІР° РІ Р±Р°Р·Р°С‚Р° $EXT_NUMBER$',
                                              Schema_GPSys.MLng.ctxCustomers,
                                              Schema_GPSys.MLng.lngBG,
                                              aParams
@@ -1326,7 +1326,7 @@ create or replace package body GPC_Cmd_Cust is
             aParams.delete;
             aParams( 1 ).ML_NAME   := 'ACTION';
             aParams( 1 ).ML_VALUE  := sAction;
-            Schema_RA.GPC_RA.RespSetErrorText( 'Не може да се регистрира ВИСОКО РИСКОВ клиент $ACTION$',
+            Schema_RA.GPC_RA.RespSetErrorText( 'РќРµ РјРѕР¶Рµ РґР° СЃРµ СЂРµРіРёСЃС‚СЂРёСЂР° Р’РРЎРћРљРћ Р РРЎРљРћР’ РєР»РёРµРЅС‚ $ACTION$',
                                                Schema_GPSys.MLng.ctxCustomers,
                                                Schema_GPSys.MLng.lngBG,
                                                aParams
@@ -1359,7 +1359,7 @@ create or replace package body GPC_Cmd_Cust is
                    VALID_FLAG = Schema_Expo.Cmd_CkrNoi.defMVRValidFlag_Valid;
 
             if ( nMVRCount = 0 ) then
-              Schema_RA.GPC_RA.RespSetErrorText( 'Не може да се регистрира клиент без проверени данни от МВР',
+              Schema_RA.GPC_RA.RespSetErrorText( 'РќРµ РјРѕР¶Рµ РґР° СЃРµ СЂРµРіРёСЃС‚СЂРёСЂР° РєР»РёРµРЅС‚ Р±РµР· РїСЂРѕРІРµСЂРµРЅРё РґР°РЅРЅРё РѕС‚ РњР’Р ',
                                                  Schema_GPSys.MLng.ctxCustomers,
                                                  Schema_GPSys.MLng.lngBG
                                                 );
@@ -1495,7 +1495,7 @@ create or replace package body GPC_Cmd_Cust is
                         rCust.NKID2025
                        );
 
-          Schema_RA.GPC_RA.RespSetErrorText( 'Не може да се заключи клиента', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+          Schema_RA.GPC_RA.RespSetErrorText( 'РќРµ РјРѕР¶Рµ РґР° СЃРµ Р·Р°РєР»СЋС‡Рё РєР»РёРµРЅС‚Р°', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
           bRet                    := Schema_GPSys.OraGPSys.LockSysObj( Schema_GPSys.OraGPSys.LockTypeCustoms, rCust.id );
         else
           update CUSTOMS
@@ -1535,7 +1535,7 @@ create or replace package body GPC_Cmd_Cust is
                  LATIN_FIRSTNAME    = nvl( rCust.LATIN_FIRSTNAME, LATIN_FIRSTNAME ),
                  LATIN_MIDLENAME    = nvl( rCust.LATIN_MIDLENAME, LATIN_MIDLENAME ),
                  LATIN_LASTNAME     = nvl( rCust.LATIN_LASTNAME, LATIN_LASTNAME ),
-                 TAX_TYPE           = rCust.TAX_TYPE, -- ако не е подадено в командата, то е празно така или иначе, ако е подадено празно в командата, да работи според CLITYPE
+                 TAX_TYPE           = rCust.TAX_TYPE, -- Р°РєРѕ РЅРµ Рµ РїРѕРґР°РґРµРЅРѕ РІ РєРѕРјР°РЅРґР°С‚Р°, С‚Рѕ Рµ РїСЂР°Р·РЅРѕ С‚Р°РєР° РёР»Рё РёРЅР°С‡Рµ, Р°РєРѕ Рµ РїРѕРґР°РґРµРЅРѕ РїСЂР°Р·РЅРѕ РІ РєРѕРјР°РЅРґР°С‚Р°, РґР° СЂР°Р±РѕС‚Рё СЃРїРѕСЂРµРґ CLITYPE
                  MARKETING_USER     = nvl( rCust.MARKETING_USER, MARKETING_USER ),
                  MARKETING_PARTNER  = nvl( rCust.MARKETING_PARTNER, MARKETING_PARTNER ),
                  ID_AGENT           = nvl( rCust.ID_AGENT, ID_AGENT ),
@@ -1642,7 +1642,7 @@ create or replace package body GPC_Cmd_Cust is
         bRet  := ii = 0;
 
         if ( bRet ) then
-          Schema_RA.GPC_RA.RespSetErrorText( 'Не може да се заключи клиента', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+          Schema_RA.GPC_RA.RespSetErrorText( 'РќРµ РјРѕР¶Рµ РґР° СЃРµ Р·Р°РєР»СЋС‡Рё РєР»РёРµРЅС‚Р°', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
           bRet  := Schema_GPSys.OraGPSys.MarkLockedObj( Schema_GPSys.OraGPSys.LockTypeCustoms, rCust.id );
         else
           aParams.delete;
@@ -1706,7 +1706,7 @@ create or replace package body GPC_Cmd_Cust is
 
       ii                                     := dbms_lock.release( handle );
     else
-      Schema_RA.GPC_RA.RespSetErrorText( 'Не може да се заключи технологията', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+      Schema_RA.GPC_RA.RespSetErrorText( 'РќРµ РјРѕР¶Рµ РґР° СЃРµ Р·Р°РєР»СЋС‡Рё С‚РµС…РЅРѕР»РѕРіРёСЏС‚Р°', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
     end if;
 
     return bRet;
@@ -1967,13 +1967,13 @@ create or replace package body GPC_Cmd_Cust is
               upper( a.DDS_VIN ) = upper( aFindParams.sIdentifierAny ) );
     else
       bRet  := false;
-      Schema_RA.GPC_RA.RespSetErrorText( 'Непознат тип филтрация', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+      Schema_RA.GPC_RA.RespSetErrorText( 'РќРµРїРѕР·РЅР°С‚ С‚РёРї С„РёР»С‚СЂР°С†РёСЏ', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
     end if;
 
     if ( bRet and
         aIDs.count > INI_ReportMaxRetRows ) then
       bRet  := false;
-      Schema_RA.GPC_RA.RespSetErrorText( 'Резултатът от търсенето е ОГРОМЕН', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+      Schema_RA.GPC_RA.RespSetErrorText( 'Р РµР·СѓР»С‚Р°С‚СЉС‚ РѕС‚ С‚СЉСЂСЃРµРЅРµС‚Рѕ Рµ РћР“Р РћРњР•Рќ', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
     end if;
 
     return bRet;
@@ -2012,7 +2012,7 @@ create or replace package body GPC_Cmd_Cust is
     bIsOraWebAdmin             boolean := false;
     bSearchRegistration        boolean := false;
   begin
-    Schema_RA.GPC_RA.RespSetErrorText( 'Некоректни входни параметри', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+    Schema_RA.GPC_RA.RespSetErrorText( 'РќРµРєРѕСЂРµРєС‚РЅРё РІС…РѕРґРЅРё РїР°СЂР°РјРµС‚СЂРё', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
     jj                              := aParamEntities3D.first;
     bRet                            := jj is not null;
 
@@ -2121,9 +2121,9 @@ create or replace package body GPC_Cmd_Cust is
                        true;
         end if;
       elsif ( aParamEntities3D( jj ).nRowType = 2 ) then
-        bRet  := Schema_GPSys.OraGPSys.FilterSaveStrings( aParamEntities3D( jj ).sValue, aParamEntities3D( jj ).nRowType ); -- Роли
+        bRet  := Schema_GPSys.OraGPSys.FilterSaveStrings( aParamEntities3D( jj ).sValue, aParamEntities3D( jj ).nRowType ); -- Р РѕР»Рё
       elsif ( aParamEntities3D( jj ).nRowType = 3 ) then
-        bRet  := Schema_GPSys.OraGPSys.FilterSaveStrings( aParamEntities3D( jj ).sValue, aParamEntities3D( jj ).nRowType ); -- Статус в ролите
+        bRet  := Schema_GPSys.OraGPSys.FilterSaveStrings( aParamEntities3D( jj ).sValue, aParamEntities3D( jj ).nRowType ); -- РЎС‚Р°С‚СѓСЃ РІ СЂРѕР»РёС‚Рµ
       else
         bRet  := false;
       end if;
@@ -2134,7 +2134,7 @@ create or replace package body GPC_Cmd_Cust is
     aFindParams.sCustomsSearchMode  := nvl( aFindParams.sCustomsSearchMode, defCustomsSearchMode_OR );
 
     if ( bRet ) then
-      Schema_RA.GPC_RA.RespSetErrorText( 'Няма изходни данни', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+      Schema_RA.GPC_RA.RespSetErrorText( 'РќСЏРјР° РёР·С…РѕРґРЅРё РґР°РЅРЅРё', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
       aFindParams.nMainCode            := GPC_Customs.UniqCode2MainCode( aFindParams.nUniqCode );
       aFindParams.nPartialSeekEGNLK    := 0;
 
@@ -2728,7 +2728,7 @@ create or replace package body GPC_Cmd_Cust is
 
           if ( bOk and
               aFindParams.sIdentifierAny is not null ) then
-            if ( bOk and -- не щот съм кьорава, а за да е униформено с долните
+            if ( bOk and -- РЅРµ С‰РѕС‚ СЃСЉРј РєСЊРѕСЂР°РІР°, Р° Р·Р° РґР° Рµ СѓРЅРёС„РѕСЂРјРµРЅРѕ СЃ РґРѕР»РЅРёС‚Рµ
                 aFindParams.sIdentifierAny <> nvl( aFindParams.CustRec.EGN, '~~~' ) ) then
               bDummy      := GPC_Customs.IsCustomerExist( 'EGN',
                                                           aFindParams.sIdentifierAny,
@@ -2982,7 +2982,7 @@ create or replace package body GPC_Cmd_Cust is
         bRet  := aIDs.count <= INI_ReportMaxRetRows;
 
         if ( bRet ) then
-          Schema_RA.GPC_RA.RespSetErrorText( 'Некоректни изходни параметри', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+          Schema_RA.GPC_RA.RespSetErrorText( 'РќРµРєРѕСЂРµРєС‚РЅРё РёР·С…РѕРґРЅРё РїР°СЂР°РјРµС‚СЂРё', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
           Schema_GPSys.GPC_Parser.RespAddArray( 1 );
 
           for ii in aIDs.first .. aIDs.last loop
@@ -3316,14 +3316,14 @@ create or replace package body GPC_Cmd_Cust is
             exit when not bRet;
           end loop;
         else
-          Schema_RA.GPC_RA.RespSetErrorText( 'Резултатът от търсенето е ОГРОМЕН', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+          Schema_RA.GPC_RA.RespSetErrorText( 'Р РµР·СѓР»С‚Р°С‚СЉС‚ РѕС‚ С‚СЉСЂСЃРµРЅРµС‚Рѕ Рµ РћР“Р РћРњР•Рќ', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
         end if;
       end if;
     end if;
 
     if ( not bFind and
         bNotRightView ) then
-      Schema_RA.GPC_RA.RespSetErrorText( 'Нямате право за преглед на намерените клиенти', Schema_GPSys.MLng.ctxCustomers, Schema_GPSys.MLng.lngBG );
+      Schema_RA.GPC_RA.RespSetErrorText( 'РќСЏРјР°С‚Рµ РїСЂР°РІРѕ Р·Р° РїСЂРµРіР»РµРґ РЅР° РЅР°РјРµСЂРµРЅРёС‚Рµ РєР»РёРµРЅС‚Рё', Schema_GPSys.MLng.ctxCustomers, Schema_GPSys.MLng.lngBG );
       bRet  := false;
     end if;
 
@@ -3349,7 +3349,7 @@ create or replace package body GPC_Cmd_Cust is
     bDummy           boolean;
     bRet             boolean;
   begin
-    Schema_RA.GPC_RA.RespSetErrorText( 'Некоректни входни параметри', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+    Schema_RA.GPC_RA.RespSetErrorText( 'РќРµРєРѕСЂРµРєС‚РЅРё РІС…РѕРґРЅРё РїР°СЂР°РјРµС‚СЂРё', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
     bRet      := Schema_GPSys.GPC_Parser.SplitParams( aParamEntities3D( 1 ).sValue, aRowValues ) and
                  Schema_GPSys.GPC_Parser.ReadInteger( aRowValues( 1 ), CustRec.id ) and
                  Schema_GPSys.GPC_Parser.ReadInteger( aRowValues( 2 ), nUniqCode ) and
@@ -3375,7 +3375,7 @@ create or replace package body GPC_Cmd_Cust is
                  Schema_GPSys.GPC_Parser.ReadString( aRowValues( 22 ), CustRec.PREVANTIVNIK );
 
     if ( bRet ) then
-      Schema_RA.GPC_RA.RespSetErrorText( 'Няма изходни данни', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+      Schema_RA.GPC_RA.RespSetErrorText( 'РќСЏРјР° РёР·С…РѕРґРЅРё РґР°РЅРЅРё', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
       nMainCode            := GPC_Customs.UniqCode2MainCode( nUniqCode );
       sNotChkUniqCode      := case
                                 when Schema_RA.GPC_SS.CheckRightFnc_CUser( Schema_RA.GPC_SS.SS_RIGHT_FNC_EXPO + 31 ) then Schema_GPSys.OraGPSys.DocSysTrue
@@ -3570,7 +3570,7 @@ create or replace package body GPC_Cmd_Cust is
         bRet  := aIDs.count < 3000;
 
         if ( bRet ) then
-          Schema_RA.GPC_RA.RespSetErrorText( 'Некоректни изходни параметри', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+          Schema_RA.GPC_RA.RespSetErrorText( 'РќРµРєРѕСЂРµРєС‚РЅРё РёР·С…РѕРґРЅРё РїР°СЂР°РјРµС‚СЂРё', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
           Schema_GPSys.GPC_Parser.RespAddArray( 1 );
 
           for ii in aIDs.first .. aIDs.last loop
@@ -3632,7 +3632,7 @@ create or replace package body GPC_Cmd_Cust is
             end if;
           end loop;
         else
-          Schema_RA.GPC_RA.RespSetErrorText( 'Резултатът от търсенето е ОГРОМЕН', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+          Schema_RA.GPC_RA.RespSetErrorText( 'Р РµР·СѓР»С‚Р°С‚СЉС‚ РѕС‚ С‚СЉСЂСЃРµРЅРµС‚Рѕ Рµ РћР“Р РћРњР•Рќ', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
         end if;
       end if;
     end if;
@@ -3640,7 +3640,7 @@ create or replace package body GPC_Cmd_Cust is
     return bRet;
   exception
     when no_data_found then
-      Schema_RA.GPC_RA.RespSetErrorText( 'Няма изходни данни', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+      Schema_RA.GPC_RA.RespSetErrorText( 'РќСЏРјР° РёР·С…РѕРґРЅРё РґР°РЅРЅРё', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
       return true;
   end CmdKontragentiFind;
 
@@ -3715,7 +3715,7 @@ create or replace package body GPC_Cmd_Cust is
     if ( not bCanWorkWithCust ) then
       if ( CustRec.PTR2PIC is not null ) then
         Schema_DocSys.DocSys.GetList( CustRec.PTR2PIC, oList );
-        bCanWorkWithCust  := oList.count > 0; --клиента има закачена графична информация
+        bCanWorkWithCust  := oList.count > 0; --РєР»РёРµРЅС‚Р° РёРјР° Р·Р°РєР°С‡РµРЅР° РіСЂР°С„РёС‡РЅР° РёРЅС„РѕСЂРјР°С†РёСЏ
       end if;
     end if;
 
@@ -4331,7 +4331,7 @@ create or replace package body GPC_Cmd_Cust is
     DocTypeCust      number;
     aParams          Schema_RA.GPC_RA.tblErrParams;
   begin
-    Schema_RA.GPC_RA.RespSetErrorText( 'Некоректни входни параметри', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+    Schema_RA.GPC_RA.RespSetErrorText( 'РќРµРєРѕСЂРµРєС‚РЅРё РІС…РѕРґРЅРё РїР°СЂР°РјРµС‚СЂРё', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
     bRet      := aParamEntities3D( 1 ).nRowType = 1 and
                  Schema_GPSys.GPC_Parser.SplitParams( aParamEntities3D( 1 ).sValue, aRowValues ) and
                  aRowValues.count >= 13 and
@@ -4377,7 +4377,7 @@ create or replace package body GPC_Cmd_Cust is
     end if;
 
     if ( bRet ) then
-      Schema_RA.GPC_RA.RespSetErrorText( 'Няма изходни данни', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+      Schema_RA.GPC_RA.RespSetErrorText( 'РќСЏРјР° РёР·С…РѕРґРЅРё РґР°РЅРЅРё', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
 
       if ( CustRec.id != 0 or
           nExpoID != 0 or
@@ -4388,14 +4388,14 @@ create or replace package body GPC_Cmd_Cust is
             aParams.delete;
             aParams( 1 ).ML_NAME   := 'EXPO_ID';
             aParams( 1 ).ML_VALUE  := to_char( nExpoID );
-            Schema_RA.GPC_RA.RespSetErrorText( 'Няма данни за клиент с експозиция: $EXPO_ID$', Schema_GPSys.MLng.ctxCustomers, Schema_GPSys.MLng.lngBG, aParams );
+            Schema_RA.GPC_RA.RespSetErrorText( 'РќСЏРјР° РґР°РЅРЅРё Р·Р° РєР»РёРµРЅС‚ СЃ РµРєСЃРїРѕР·РёС†РёСЏ: $EXPO_ID$', Schema_GPSys.MLng.ctxCustomers, Schema_GPSys.MLng.lngBG, aParams );
             bRet                   := CustRec.id != 0;
           else
             CustRec.id             := Schema_GPSys.HeadExpo.IBAN2IdCust( sIBAN );
             aParams.delete;
             aParams( 1 ).ML_NAME   := 'IBAN';
             aParams( 1 ).ML_VALUE  := sIBAN;
-            Schema_RA.GPC_RA.RespSetErrorText( 'Няма данни за клиент с IBAN:$IBAN$', Schema_GPSys.MLng.ctxCustomers, Schema_GPSys.MLng.lngBG, aParams );
+            Schema_RA.GPC_RA.RespSetErrorText( 'РќСЏРјР° РґР°РЅРЅРё Р·Р° РєР»РёРµРЅС‚ СЃ IBAN:$IBAN$', Schema_GPSys.MLng.ctxCustomers, Schema_GPSys.MLng.lngBG, aParams );
             bRet                   := CustRec.id != 0;
           end if;
         end if;
@@ -4408,7 +4408,7 @@ create or replace package body GPC_Cmd_Cust is
              where id = CustRec.id;
           exception
             when no_data_found then
-              Schema_RA.GPC_RA.RespSetErrorText( 'Няма изходни данни', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+              Schema_RA.GPC_RA.RespSetErrorText( 'РќСЏРјР° РёР·С…РѕРґРЅРё РґР°РЅРЅРё', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
               bRet  := false;
           end;
         end if;
@@ -4422,7 +4422,7 @@ create or replace package body GPC_Cmd_Cust is
           into CustRec;
 
         if ( iqq%notfound ) then
-          Schema_RA.GPC_RA.RespSetErrorText( 'Няма изходни данни', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+          Schema_RA.GPC_RA.RespSetErrorText( 'РќСЏРјР° РёР·С…РѕРґРЅРё РґР°РЅРЅРё', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
           bRet  := false;
         end if;
 
@@ -4449,7 +4449,7 @@ create or replace package body GPC_Cmd_Cust is
                   aParams.delete;
                   aParams( 1 ).ML_NAME   := 'USER_ID';
                   aParams( 1 ).ML_VALUE  := to_char( nUserId );
-                  Schema_RA.GPC_RA.RespSetErrorText( 'Потребител номер $USER_ID$ не може да бъде заключен',
+                  Schema_RA.GPC_RA.RespSetErrorText( 'РџРѕС‚СЂРµР±РёС‚РµР» РЅРѕРјРµСЂ $USER_ID$ РЅРµ РјРѕР¶Рµ РґР° Р±СЉРґРµ Р·Р°РєР»СЋС‡РµРЅ',
                                                      Schema_GPSys.MLng.ctxCustomers,
                                                      Schema_GPSys.MLng.lngBG
                                                     );
@@ -4539,7 +4539,7 @@ create or replace package body GPC_Cmd_Cust is
             aParams( 1 ).ML_VALUE  := rLockInfo.sUserName;
             aParams( 2 ).ML_NAME   := 'LOCK_DATE';
             aParams( 2 ).ML_VALUE  := to_char( rLockInfo.dLock, 'dd.mm.yyyy/HH24:MI:SS' );
-            Schema_RA.GPC_RA.RespSetErrorText( 'Досието е заключено от потребител $USER_NAME$ на дата/час $LOCK_DATE$',
+            Schema_RA.GPC_RA.RespSetErrorText( 'Р”РѕСЃРёРµС‚Рѕ Рµ Р·Р°РєР»СЋС‡РµРЅРѕ РѕС‚ РїРѕС‚СЂРµР±РёС‚РµР» $USER_NAME$ РЅР° РґР°С‚Р°/С‡Р°СЃ $LOCK_DATE$',
                                                Schema_GPSys.MLng.ctxCustomers,
                                                Schema_GPSys.MLng.lngBG,
                                                aParams
@@ -4585,7 +4585,7 @@ create or replace package body GPC_Cmd_Cust is
     nChOper          number;
     dChDate          date;
   begin
-    Schema_RA.GPC_RA.RespSetErrorText( 'Некоректни входни параметри', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+    Schema_RA.GPC_RA.RespSetErrorText( 'РќРµРєРѕСЂРµРєС‚РЅРё РІС…РѕРґРЅРё РїР°СЂР°РјРµС‚СЂРё', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
     bRet      := aParamEntities3D( 1 ).nRowType = 1 and
                  Schema_GPSys.GPC_Parser.SplitParams( aParamEntities3D( 1 ).sValue, aRowValues ) and
                  aRowValues.count >= 13 and
@@ -4619,7 +4619,7 @@ create or replace package body GPC_Cmd_Cust is
     end if;
 
     if ( bRet ) then
-      Schema_RA.GPC_RA.RespSetErrorText( 'Няма изходни данни', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+      Schema_RA.GPC_RA.RespSetErrorText( 'РќСЏРјР° РёР·С…РѕРґРЅРё РґР°РЅРЅРё', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
 
       if ( nvl( nPTRDoc, 0 ) = 0 ) then
         begin
@@ -4629,7 +4629,7 @@ create or replace package body GPC_Cmd_Cust is
            where id = CustRec.id;
         exception
           when no_data_found then
-            Schema_RA.GPC_RA.RespSetErrorText( 'Няма изходни данни', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+            Schema_RA.GPC_RA.RespSetErrorText( 'РќСЏРјР° РёР·С…РѕРґРЅРё РґР°РЅРЅРё', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
             bRet  := false;
         end;
       end if;
@@ -4770,7 +4770,7 @@ create or replace package body GPC_Cmd_Cust is
     bRet          boolean;
     bExportToDWH  boolean := false;
   begin
-    Schema_RA.GPC_RA.RespSetErrorText( 'Некоректни входни параметри', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+    Schema_RA.GPC_RA.RespSetErrorText( 'РќРµРєРѕСЂРµРєС‚РЅРё РІС…РѕРґРЅРё РїР°СЂР°РјРµС‚СЂРё', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
     bRet      := Schema_GPSys.GPC_Parser.SplitParams( aParamEntities3D( 1 ).sValue, aRowValues ) and
                  Schema_GPSys.GPC_Parser.ReadInteger( aRowValues( 1 ), nIdCust ) and
                  ( ( not aRowValues.exists( 3 ) ) or
@@ -4782,7 +4782,7 @@ create or replace package body GPC_Cmd_Cust is
     $end
 
     if ( bRet ) then
-      Schema_RA.GPC_RA.RespSetErrorText( 'Некоректни изходни параметри', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+      Schema_RA.GPC_RA.RespSetErrorText( 'РќРµРєРѕСЂРµРєС‚РЅРё РёР·С…РѕРґРЅРё РїР°СЂР°РјРµС‚СЂРё', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
       Schema_GPSys.GPC_Parser.RespAddTable( 1 );
       nIdCust  := nvl( nIdCust, 0 );
 
@@ -4932,7 +4932,7 @@ create or replace package body GPC_Cmd_Cust is
     bRet         boolean;
     bStop        boolean;
   begin
-    Schema_RA.GPC_RA.RespSetErrorText( 'Некоректни входни параметри', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+    Schema_RA.GPC_RA.RespSetErrorText( 'РќРµРєРѕСЂРµРєС‚РЅРё РІС…РѕРґРЅРё РїР°СЂР°РјРµС‚СЂРё', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
     bRet      := Schema_GPSys.GPC_Parser.SplitParams( aParamEntities3D( 1 ).sValue, aRowValues ) and
                  Schema_GPSys.GPC_Parser.ReadDate( aRowValues( 1 ), dDate ) and
                  Schema_GPSys.GPC_Parser.ReadInteger( aRowValues( 2 ), nUniqCode );
@@ -5027,7 +5027,7 @@ create or replace package body GPC_Cmd_Cust is
               Schema_GPSys.GPC_Parser.RespAddRow( sData );
               sData  := null;
             else
-              Schema_RA.GPC_RA.RespSetErrorText( 'Грешка при зареждане на данни', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+              Schema_RA.GPC_RA.RespSetErrorText( 'Р“СЂРµС€РєР° РїСЂРё Р·Р°СЂРµР¶РґР°РЅРµ РЅР° РґР°РЅРЅРё', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
               bRet  := false;
             end if;
           end loop;
@@ -5048,7 +5048,7 @@ create or replace package body GPC_Cmd_Cust is
     sData       varchar2( 4000 );
     aParams     Schema_RA.GPC_RA.tblErrParams;
   begin
-    Schema_RA.GPC_RA.RespSetErrorText( 'Некоректни входни параметри', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+    Schema_RA.GPC_RA.RespSetErrorText( 'РќРµРєРѕСЂРµРєС‚РЅРё РІС…РѕРґРЅРё РїР°СЂР°РјРµС‚СЂРё', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
     bRet      := aParamEntities3D( 1 ).nRowType = 1 and
                  Schema_GPSys.GPC_Parser.SplitParams( aParamEntities3D( 1 ).sValue, aRowValues ) and
                  aRowValues.count >= 1 and
@@ -5067,7 +5067,7 @@ create or replace package body GPC_Cmd_Cust is
           aParams.delete;
           aParams( 1 ).ML_NAME   := 'BIC_CODE';
           aParams( 1 ).ML_VALUE  := cBICCode;
-          Schema_RA.GPC_RA.RespSetErrorText( 'Няма досие с BIC код:$BIC_CODE$', Schema_GPSys.MLng.ctxCustomers, Schema_GPSys.MLng.lngBG, aParams );
+          Schema_RA.GPC_RA.RespSetErrorText( 'РќСЏРјР° РґРѕСЃРёРµ СЃ BIC РєРѕРґ:$BIC_CODE$', Schema_GPSys.MLng.ctxCustomers, Schema_GPSys.MLng.lngBG, aParams );
       end;
 
       if ( bRet is not null ) then
@@ -5134,7 +5134,7 @@ create or replace package body GPC_Cmd_Cust is
     bDummy       boolean;
     aParams      Schema_RA.GPC_RA.tblErrParams;
   begin
-    Schema_RA.GPC_RA.RespSetErrorText( 'Некоректни входни параметри', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+    Schema_RA.GPC_RA.RespSetErrorText( 'РќРµРєРѕСЂРµРєС‚РЅРё РІС…РѕРґРЅРё РїР°СЂР°РјРµС‚СЂРё', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
     bRet  := aParamEntities3D.first is not null;
 
     if ( bRet ) then
@@ -5185,7 +5185,7 @@ create or replace package body GPC_Cmd_Cust is
               aParams.delete;
               aParams( 1 ).ML_NAME   := 'FLDUSERID';
               aParams( 1 ).ML_VALUE  := to_char( ManagerData.FLDUSERID );
-              Schema_RA.GPC_RA.RespSetErrorText( 'Relationship Manager $FLDUSERID$ вече съществува в базата', Schema_GPSys.MLng.ctxCustomers, Schema_GPSys.MLng.lngBG, aParams );
+              Schema_RA.GPC_RA.RespSetErrorText( 'Relationship Manager $FLDUSERID$ РІРµС‡Рµ СЃСЉС‰РµСЃС‚РІСѓРІР° РІ Р±Р°Р·Р°С‚Р°', Schema_GPSys.MLng.ctxCustomers, Schema_GPSys.MLng.lngBG, aParams );
               bRet                   := false;
             end if;
           else
@@ -5220,11 +5220,11 @@ create or replace package body GPC_Cmd_Cust is
     oRespRow.nRowType         := 1;
     oRespRow.sValue           := '"EDT"' || '&' || '1' || '&' || '"F"' || '&' || '"LF"' || '&' || '100' || '&' || '0' || '&';
     oResp( oResp.count + 1 )  := oRespRow;
-    -- гражданин
+    -- РіСЂР°Р¶РґР°РЅРёРЅ
     oRespRow.nRowType         := 2;
     oRespRow.sValue           := '"8299999998"' ||
                                  '&' ||
-                                 '"Николай"' ||
+                                 '"РќРёРєРѕР»Р°Р№"' ||
                                  '&' ||
                                  '"hahaddd"' ||
                                  '&' ||
@@ -5261,7 +5261,7 @@ create or replace package body GPC_Cmd_Cust is
                                  '&' ||
                                  '&';
     oResp( oResp.count + 1 )  := oRespRow;
-    -- фирма
+    -- С„РёСЂРјР°
     /*  oRespRow.nRowType         := 3;
         oRespRow.sValue           := '"GP Consulting"' ||
                                      '&' ||
@@ -5309,9 +5309,9 @@ create or replace package body GPC_Cmd_Cust is
                                      '&' ||
                                      '&';
         oResp( oResp.count + 1 )  := oRespRow;*/
-    -- банка
+    -- Р±Р°РЅРєР°
     /*  oRespRow.nRowType         := 4;
-        oRespRow.sValue           := '"Банка"' || '&' || '"68096809"' || '&' || '&' || '&' || '&' || '&' || '&' || '&' || '&' || '&' || '&' || '&' || '&' || '&' || '&' || '&' || '&' || '&' || '&' || '&';
+        oRespRow.sValue           := '"Р‘Р°РЅРєР°"' || '&' || '"68096809"' || '&' || '&' || '&' || '&' || '&' || '&' || '&' || '&' || '&' || '&' || '&' || '&' || '&' || '&' || '&' || '&' || '&' || '&' || '&';
         oResp( oResp.count + 1 )  := oRespRow;*/
     --
     /*  oRespRow.nRowType         := 5;
@@ -5459,7 +5459,7 @@ create or replace package body GPC_Cmd_Cust is
       bRet      := Schema_GPSys.GPC_Parser.SplitParams( aParamEntities3D( ii ).sValue, aRowValues );
 
       if ( bRet ) then
-        if ( nRowType = 1 ) then -- общи данни
+        if ( nRowType = 1 ) then -- РѕР±С‰Рё РґР°РЅРЅРё
           bRet      := aRowValues.count >= 4 and
                        Schema_GPSys.GPC_Parser.ReadString( aRowValues( 1 ), sDateTimeFrom ) and
                        Schema_GPSys.GPC_Parser.ReadDateTime( sDateTimeFrom, dDateTimeFrom ) and
@@ -5543,7 +5543,7 @@ create or replace package body GPC_Cmd_Cust is
           if ( bRet ) then
             Schema_GPSys.GPC_Parser.RespAddRow( sData );
           else
-            Schema_RA.GPC_RA.RespSetErrorText( 'Некоректни изходни данни', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+            Schema_RA.GPC_RA.RespSetErrorText( 'РќРµРєРѕСЂРµРєС‚РЅРё РёР·С…РѕРґРЅРё РґР°РЅРЅРё', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
           end if;
         end if;
 
@@ -5553,7 +5553,7 @@ create or replace package body GPC_Cmd_Cust is
 
       close qReqLogFind;
     else
-      Schema_RA.GPC_RA.RespSetErrorText( 'Некоректни входни параметри', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+      Schema_RA.GPC_RA.RespSetErrorText( 'РќРµРєРѕСЂРµРєС‚РЅРё РІС…РѕРґРЅРё РїР°СЂР°РјРµС‚СЂРё', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
     end if;
 
     return bRet;
@@ -5602,7 +5602,7 @@ create or replace package body GPC_Cmd_Cust is
     end if;
 
     if ( not bRet ) then
-      Schema_RA.GPC_RA.RespSetErrorText( 'Некоректни входни параметри', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+      Schema_RA.GPC_RA.RespSetErrorText( 'РќРµРєРѕСЂРµРєС‚РЅРё РІС…РѕРґРЅРё РїР°СЂР°РјРµС‚СЂРё', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
     else
       select count( 1 )
         into jj
@@ -5703,7 +5703,7 @@ create or replace package body GPC_Cmd_Cust is
                              Schema_GPSys.GPC_Parser.WriteString( rec.EMPLOYER_NAME, sData ) and -- 73
                              Schema_GPSys.GPC_Parser.WriteString( rec.CONTACT_PERSON, sData ) and -- 74
                              Schema_GPSys.GPC_Parser.WriteString( rec.FOREIGN_ADDRESS, sData ) and -- 75
-                             Schema_GPSys.GPC_Parser.WriteString( rec.MCC, sData ) and -- 76 - праща се втори път за MCC_RISK
+                             Schema_GPSys.GPC_Parser.WriteString( rec.MCC, sData ) and -- 76 - РїСЂР°С‰Р° СЃРµ РІС‚РѕСЂРё РїСЉС‚ Р·Р° MCC_RISK
                              Schema_GPSys.GPC_Parser.WriteInteger( rec.SLUJITEL_REG, sData ) and -- 77
                              true;
               elsif ( rec.CLITYPE = 'F' ) then
@@ -5775,7 +5775,7 @@ create or replace package body GPC_Cmd_Cust is
                              Schema_GPSys.GPC_Parser.WriteString( rec.EMPLOYER_NAME, sData ) and -- 73
                              Schema_GPSys.GPC_Parser.WriteString( rec.CONTACT_PERSON, sData ) and -- 74
                              Schema_GPSys.GPC_Parser.WriteString( rec.FOREIGN_ADDRESS, sData ) and -- 75
-                             Schema_GPSys.GPC_Parser.WriteString( rec.MCC, sData ) and -- 76 - праща се втори път за MCC_RISK
+                             Schema_GPSys.GPC_Parser.WriteString( rec.MCC, sData ) and -- 76 - РїСЂР°С‰Р° СЃРµ РІС‚РѕСЂРё РїСЉС‚ Р·Р° MCC_RISK
                              Schema_GPSys.GPC_Parser.WriteInteger( rec.SLUJITEL_REG, sData ) and -- 77
                              true;
               else
@@ -5856,7 +5856,7 @@ create or replace package body GPC_Cmd_Cust is
                              Schema_GPSys.GPC_Parser.WriteString( rec.EMPLOYER_NAME, sData ) and -- 73
                              Schema_GPSys.GPC_Parser.WriteString( rec.CONTACT_PERSON, sData ) and -- 74
                              Schema_GPSys.GPC_Parser.WriteString( rec.FOREIGN_ADDRESS, sData ) and -- 75
-                             Schema_GPSys.GPC_Parser.WriteString( rec.MCC, sData ) and -- 76 - праща се втори път за MCC_RISK
+                             Schema_GPSys.GPC_Parser.WriteString( rec.MCC, sData ) and -- 76 - РїСЂР°С‰Р° СЃРµ РІС‚РѕСЂРё РїСЉС‚ Р·Р° MCC_RISK
                              Schema_GPSys.GPC_Parser.WriteInteger( rec.SLUJITEL_REG, sData ) and -- 77
                              true;
               end if;
@@ -6179,17 +6179,17 @@ create or replace package body GPC_Cmd_Cust is
                 aParams.delete;
                 aParams( 1 ).ML_NAME   := 'ID_DOC';
                 aParams( 1 ).ML_VALUE  := aDocs( ii ).ID_DOC;
-                Schema_RA.GPC_RA.RespSetErrorText( 'Дублирани данни за вид документ $ID_DOC$', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG, aParams );
+                Schema_RA.GPC_RA.RespSetErrorText( 'Р”СѓР±Р»РёСЂР°РЅРё РґР°РЅРЅРё Р·Р° РІРёРґ РґРѕРєСѓРјРµРЅС‚ $ID_DOC$', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG, aParams );
             end;
           end if;
 
           exit when not bRet;
         end loop;
       else
-        Schema_RA.GPC_RA.RespSetErrorText( 'Не са подадени данни за запис', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+        Schema_RA.GPC_RA.RespSetErrorText( 'РќРµ СЃР° РїРѕРґР°РґРµРЅРё РґР°РЅРЅРё Р·Р° Р·Р°РїРёСЃ', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
       end if;
     else
-      Schema_RA.GPC_RA.RespSetErrorText( 'Некоректни входни параметри', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+      Schema_RA.GPC_RA.RespSetErrorText( 'РќРµРєРѕСЂРµРєС‚РЅРё РІС…РѕРґРЅРё РїР°СЂР°РјРµС‚СЂРё', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
     end if;
 
     return bRet;
@@ -6243,7 +6243,7 @@ create or replace package body GPC_Cmd_Cust is
                  FLDCH_DATE    = sysdate
            where FLDUSERID = rUser.FLDUSERID;
 
-          Schema_RA.GPC_RA.RespSetErrorText( 'Грешка при генериране на номенклатура Потребители', Schema_GPSys.MLng.ctxCustomers, Schema_GPSys.MLng.lngBG );
+          Schema_RA.GPC_RA.RespSetErrorText( 'Р“СЂРµС€РєР° РїСЂРё РіРµРЅРµСЂРёСЂР°РЅРµ РЅР° РЅРѕРјРµРЅРєР»Р°С‚СѓСЂР° РџРѕС‚СЂРµР±РёС‚РµР»Рё', Schema_GPSys.MLng.ctxCustomers, Schema_GPSys.MLng.lngBG );
           bRet  := Schema_RA.GPC_Cmd_Users.GenerateUsersNom( bNomDataChanged, bUsersByUC, aUCsForUpdate );
         end if;
 
@@ -6251,7 +6251,7 @@ create or replace package body GPC_Cmd_Cust is
           aParams.delete;
           aParams( 1 ).ML_NAME   := 'FLDUSERID';
           aParams( 1 ).ML_VALUE  := to_char( rUser.FLDUSERID );
-          Schema_RA.GPC_RA.RespSetErrorText( 'Потребител с ID $FLDUSERID$ не може да бъде отключен', Schema_GPSys.MLng.ctxCustomers, Schema_GPSys.MLng.lngBG, aParams );
+          Schema_RA.GPC_RA.RespSetErrorText( 'РџРѕС‚СЂРµР±РёС‚РµР» СЃ ID $FLDUSERID$ РЅРµ РјРѕР¶Рµ РґР° Р±СЉРґРµ РѕС‚РєР»СЋС‡РµРЅ', Schema_GPSys.MLng.ctxCustomers, Schema_GPSys.MLng.lngBG, aParams );
           bRet                   := Schema_GPSys.OraGPSys.UnLockSysObj( Schema_GPSys.OraGPSys.LockTypeUsers, rUser.FLDUSERID );
         end if;
       end if;
@@ -6265,7 +6265,7 @@ create or replace package body GPC_Cmd_Cust is
   --------------------------------------------------------------------------------
   function GetShareholderHierarchyTree(
     nIDCust         in     pls_integer,
-    аShareholders  in out tаShareholders,
+    Р°Shareholders  in out tР°Shareholders,
     sTraceString    in     varchar2,
     nLevel          in     pls_integer,
     nUpperItem      in     pls_integer
@@ -6273,7 +6273,7 @@ create or replace package body GPC_Cmd_Cust is
     return boolean is
     oDoc            Schema_GPSys.RecDocSysType;
     oList           Schema_GPSys.DocSysList;
-    аIDs           tаShareholders;
+    Р°IDs           tР°Shareholders;
     rCust           CUSTOMS%rowtype;
     nShareholderID  pls_integer;
     bRet            boolean := true;
@@ -6294,7 +6294,7 @@ create or replace package body GPC_Cmd_Cust is
       aParams.delete;
       aParams( 1 ).ML_NAME   := 'ID_CUST';
       aParams( 1 ).ML_VALUE  := to_char( nIDCust );
-      Schema_RA.GPC_RA.RespSetErrorText( 'Няма данни за клиент с ID: $ID_CUST$', Schema_GPSys.MLng.ctxCustomers, Schema_GPSys.MLng.lngBG, aParams );
+      Schema_RA.GPC_RA.RespSetErrorText( 'РќСЏРјР° РґР°РЅРЅРё Р·Р° РєР»РёРµРЅС‚ СЃ ID: $ID_CUST$', Schema_GPSys.MLng.ctxCustomers, Schema_GPSys.MLng.lngBG, aParams );
       bRet                   := false;
     end if;
 
@@ -6306,16 +6306,16 @@ create or replace package body GPC_Cmd_Cust is
 
       for ii in oList.first .. oList.last loop
         Schema_DocSys.DocSys.GetDocument( oList( ii ).DocType, oList( ii ).LDocNo, oList( ii ).LChStamp, oDoc );
-        аIDs( аIDs.count + 1 ).SHAREHOLDER_ID_CUST  := Schema_GPSys.OraGPSys.GetFromCmdNumber( oDoc, 'CustomsLoad', '12.01' );
-        аIDs( аIDs.count ).OWNERSHIP                := Schema_GPSys.OraGPSys.GetFromCmdNumber( oDoc, 'CustomsLoad', '12.02' );
+        Р°IDs( Р°IDs.count + 1 ).SHAREHOLDER_ID_CUST  := Schema_GPSys.OraGPSys.GetFromCmdNumber( oDoc, 'CustomsLoad', '12.01' );
+        Р°IDs( Р°IDs.count ).OWNERSHIP                := Schema_GPSys.OraGPSys.GetFromCmdNumber( oDoc, 'CustomsLoad', '12.02' );
 
-        if ( nvl( аIDs( аIDs.count ).SHAREHOLDER_ID_CUST, 0 ) = nUpperItem ) then
-          аShareholders( аShareholders.count ).INTERCONNECTED  := defShareholders_Interconnected;
+        if ( nvl( Р°IDs( Р°IDs.count ).SHAREHOLDER_ID_CUST, 0 ) = nUpperItem ) then
+          Р°Shareholders( Р°Shareholders.count ).INTERCONNECTED  := defShareholders_Interconnected;
         end if;
       end loop;
 
-      for ii in аIDs.first .. аIDs.last loop
-        nShareholderID  := аIDs( ii ).SHAREHOLDER_ID_CUST;
+      for ii in Р°IDs.first .. Р°IDs.last loop
+        nShareholderID  := Р°IDs( ii ).SHAREHOLDER_ID_CUST;
 
         if ( nvl( nShareholderID, 0 ) > 0 ) then
           rCust  := null;
@@ -6329,35 +6329,35 @@ create or replace package body GPC_Cmd_Cust is
             aParams.delete;
             aParams( 1 ).ML_NAME   := 'SHAREHOLDER_ID';
             aParams( 1 ).ML_VALUE  := to_char( nShareholderID );
-            Schema_RA.GPC_RA.RespSetErrorText( 'Няма данни за собственик с ID: $SHAREHOLDER_ID$', Schema_GPSys.MLng.ctxCustomers, Schema_GPSys.MLng.lngBG, aParams );
+            Schema_RA.GPC_RA.RespSetErrorText( 'РќСЏРјР° РґР°РЅРЅРё Р·Р° СЃРѕР±СЃС‚РІРµРЅРёРє СЃ ID: $SHAREHOLDER_ID$', Schema_GPSys.MLng.ctxCustomers, Schema_GPSys.MLng.lngBG, aParams );
             bRet                   := false;
           end if;
 
           close qFindCust;
 
           if ( bRet ) then
-            аShareholders( аShareholders.count + 1 ).ID_CUST          := nIDCust;
-            аShareholders( аShareholders.count ).SHAREHOLDER_ID_CUST  := nShareholderID;
-            аShareholders( аShareholders.count ).OWNERSHIP            := аIDs( ii ).OWNERSHIP;
-            аShareholders( аShareholders.count ).SHAREHOLDER_TYPE     := rCust.CLITYPE;
-            аShareholders( аShareholders.count ).SHAREHOLDER_NAME     := trim( trim( rCust.FIRSTNAME ) || ' ' || trim( rCust.MIDLENAME ) || ' ' || trim( rCust.LASTNAME ) );
-            аShareholders( аShareholders.count ).SHAREHOLDER_EIK      := case rCust.CLITYPE
+            Р°Shareholders( Р°Shareholders.count + 1 ).ID_CUST          := nIDCust;
+            Р°Shareholders( Р°Shareholders.count ).SHAREHOLDER_ID_CUST  := nShareholderID;
+            Р°Shareholders( Р°Shareholders.count ).OWNERSHIP            := Р°IDs( ii ).OWNERSHIP;
+            Р°Shareholders( Р°Shareholders.count ).SHAREHOLDER_TYPE     := rCust.CLITYPE;
+            Р°Shareholders( Р°Shareholders.count ).SHAREHOLDER_NAME     := trim( trim( rCust.FIRSTNAME ) || ' ' || trim( rCust.MIDLENAME ) || ' ' || trim( rCust.LASTNAME ) );
+            Р°Shareholders( Р°Shareholders.count ).SHAREHOLDER_EIK      := case rCust.CLITYPE
                                                                              when 'C' then nvl( rCust.EGN, rCust.ENCH )
                                                                              else rCust.BULSTAT
                                                                            end;
-            аShareholders( аShareholders.count ).TRACE_STRING         := sTraceString || to_char( nShareholderID ) || Schema_GPSys.GPC_Parser.DELIMITER_SEMICOLON;
-            аShareholders( аShareholders.count ).INTERCONNECTED       := defShareholders_NotConnected;
-            аShareholders( аShareholders.count ).HIERARCHY_LEVEL      := nLevel;
+            Р°Shareholders( Р°Shareholders.count ).TRACE_STRING         := sTraceString || to_char( nShareholderID ) || Schema_GPSys.GPC_Parser.DELIMITER_SEMICOLON;
+            Р°Shareholders( Р°Shareholders.count ).INTERCONNECTED       := defShareholders_NotConnected;
+            Р°Shareholders( Р°Shareholders.count ).HIERARCHY_LEVEL      := nLevel;
 
             if ( instr( sTraceString, Schema_GPSys.GPC_Parser.DELIMITER_SEMICOLON || to_char( nShareholderID ) || Schema_GPSys.GPC_Parser.DELIMITER_SEMICOLON ) > 0 ) then
               if ( nShareholderID = nUpperItem ) then
-                аShareholders( аShareholders.count ).INTERCONNECTED  := defShareholders_Interconnected;
+                Р°Shareholders( Р°Shareholders.count ).INTERCONNECTED  := defShareholders_Interconnected;
               else
-                аShareholders( аShareholders.count ).INTERCONNECTED  := defShareholders_Indirect;
+                Р°Shareholders( Р°Shareholders.count ).INTERCONNECTED  := defShareholders_Indirect;
               end if;
             else
               if ( rCust.CLITYPE != 'C' ) then
-                bRet  := GetShareholderHierarchyTree( nShareholderID, аShareholders, sTraceString || to_char( nShareholderID ) || Schema_GPSys.GPC_Parser.DELIMITER_SEMICOLON, nLevel + 1, nIDCust );
+                bRet  := GetShareholderHierarchyTree( nShareholderID, Р°Shareholders, sTraceString || to_char( nShareholderID ) || Schema_GPSys.GPC_Parser.DELIMITER_SEMICOLON, nLevel + 1, nIDCust );
               end if;
             end if;
           end if;
@@ -6373,7 +6373,7 @@ create or replace package body GPC_Cmd_Cust is
   --------------------------------------------------------------------------------
   function CmdShareholdersHierarchyTree( aParamEntities3D in Schema_GPSys.GPC_Parser.taParamEntities3D )
     return boolean is
-    аShareholders  tаShareholders;
+    Р°Shareholders  tР°Shareholders;
     aRowValues      Schema_GPSys.GPC_Parser.taParamStrings;
     nIDCust         pls_integer;
     nCurrent        pls_integer := 1;
@@ -6382,7 +6382,7 @@ create or replace package body GPC_Cmd_Cust is
     bRet            boolean;
   begin
     ii    := aParamEntities3D.first;
-    Schema_RA.GPC_RA.RespSetErrorText( 'Некоректни входни параметри', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+    Schema_RA.GPC_RA.RespSetErrorText( 'РќРµРєРѕСЂРµРєС‚РЅРё РІС…РѕРґРЅРё РїР°СЂР°РјРµС‚СЂРё', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
     bRet  := ii is not null;
 
     while ( ii is not null and
@@ -6397,23 +6397,23 @@ create or replace package body GPC_Cmd_Cust is
     end loop;
 
     if ( bRet ) then
-      bRet  := GetShareholderHierarchyTree( nIDCust, аShareholders, Schema_GPSys.GPC_Parser.DELIMITER_SEMICOLON || to_char( nIDCust ) || Schema_GPSys.GPC_Parser.DELIMITER_SEMICOLON, 2, 0 );
+      bRet  := GetShareholderHierarchyTree( nIDCust, Р°Shareholders, Schema_GPSys.GPC_Parser.DELIMITER_SEMICOLON || to_char( nIDCust ) || Schema_GPSys.GPC_Parser.DELIMITER_SEMICOLON, 2, 0 );
     end if;
 
     if ( bRet ) then
       Schema_GPSys.GPC_Parser.RespAddArray( 1 );
 
-      for ii in 1 .. аShareholders.count loop
+      for ii in 1 .. Р°Shareholders.count loop
         sData     := null;
-        bRet      := Schema_GPSys.GPC_Parser.WriteInteger( аShareholders( ii ).ID_CUST, sData ) and
-                     Schema_GPSys.GPC_Parser.WriteInteger( аShareholders( ii ).SHAREHOLDER_ID_CUST, sData ) and
-                     Schema_GPSys.GPC_Parser.WriteString( аShareholders( ii ).SHAREHOLDER_TYPE, sData ) and
-                     Schema_GPSys.GPC_Parser.WriteString( аShareholders( ii ).SHAREHOLDER_NAME, sData ) and
-                     Schema_GPSys.GPC_Parser.WriteString( аShareholders( ii ).SHAREHOLDER_EIK, sData ) and
-                     Schema_GPSys.GPC_Parser.WriteNumber( аShareholders( ii ).OWNERSHIP, sData ) and
-                     Schema_GPSys.GPC_Parser.WriteString( аShareholders( ii ).TRACE_STRING, sData ) and
-                     Schema_GPSys.GPC_Parser.WriteString( аShareholders( ii ).INTERCONNECTED, sData ) and
-                     Schema_GPSys.GPC_Parser.WriteInteger( аShareholders( ii ).HIERARCHY_LEVEL, sData ) and
+        bRet      := Schema_GPSys.GPC_Parser.WriteInteger( Р°Shareholders( ii ).ID_CUST, sData ) and
+                     Schema_GPSys.GPC_Parser.WriteInteger( Р°Shareholders( ii ).SHAREHOLDER_ID_CUST, sData ) and
+                     Schema_GPSys.GPC_Parser.WriteString( Р°Shareholders( ii ).SHAREHOLDER_TYPE, sData ) and
+                     Schema_GPSys.GPC_Parser.WriteString( Р°Shareholders( ii ).SHAREHOLDER_NAME, sData ) and
+                     Schema_GPSys.GPC_Parser.WriteString( Р°Shareholders( ii ).SHAREHOLDER_EIK, sData ) and
+                     Schema_GPSys.GPC_Parser.WriteNumber( Р°Shareholders( ii ).OWNERSHIP, sData ) and
+                     Schema_GPSys.GPC_Parser.WriteString( Р°Shareholders( ii ).TRACE_STRING, sData ) and
+                     Schema_GPSys.GPC_Parser.WriteString( Р°Shareholders( ii ).INTERCONNECTED, sData ) and
+                     Schema_GPSys.GPC_Parser.WriteInteger( Р°Shareholders( ii ).HIERARCHY_LEVEL, sData ) and
                      true;
 
         if ( bRet ) then
@@ -6422,7 +6422,7 @@ create or replace package body GPC_Cmd_Cust is
           bRet      := bRet and
                        Schema_RA.GPC_RA.ChkStopField( nCurrent, nCurrent );
         else
-          Schema_RA.GPC_RA.RespSetErrorText( 'Некоректни изходни данни', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+          Schema_RA.GPC_RA.RespSetErrorText( 'РќРµРєРѕСЂРµРєС‚РЅРё РёР·С…РѕРґРЅРё РґР°РЅРЅРё', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
         end if;
 
         exit when not bRet;
@@ -6499,7 +6499,7 @@ create or replace package body GPC_Cmd_Cust is
           for ii in 1 .. oList.count loop
             Schema_DocSys.DocSys.GetDocument( oList( ii ).DocType, oList( ii ).LDocNo, oList( ii ).LChStamp, oDoc );
 
-            if ( aSData( nn ) = Schema_GPSys.OraGPSys.GetFromCmdString( oDoc, 'CustomsLoad', '11.02' ) ) then --Тип графична информация
+            if ( aSData( nn ) = Schema_GPSys.OraGPSys.GetFromCmdString( oDoc, 'CustomsLoad', '11.02' ) ) then --РўРёРї РіСЂР°С„РёС‡РЅР° РёРЅС„РѕСЂРјР°С†РёСЏ
               bCustHasGrafInf  := true;
               exit;
             end if;
@@ -6521,7 +6521,7 @@ create or replace package body GPC_Cmd_Cust is
     sData       varchar2( 4000 );
     bRet        boolean;
   begin
-    Schema_RA.GPC_RA.RespSetErrorText( 'Некоректни входни параметри', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
+    Schema_RA.GPC_RA.RespSetErrorText( 'РќРµРєРѕСЂРµРєС‚РЅРё РІС…РѕРґРЅРё РїР°СЂР°РјРµС‚СЂРё', Schema_GPSys.MLng.ctxSysMsg, Schema_GPSys.MLng.lngBG );
     bRet      := Schema_GPSys.GPC_Parser.SplitParams( aParamEntities3D( 1 ).sValue, aRowValues ) and
                  Schema_GPSys.GPC_Parser.ReadInteger( aRowValues( 1 ), nIdCust );
 
