@@ -33,7 +33,7 @@ jobs:
             -Dsonar.organization=scon-bg
             -Dsonar.sources=src
 
-- name: Export All Issues to JSON
+      - name: Export All Issues to JSON
         if: always()
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
