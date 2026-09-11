@@ -33,14 +33,50 @@ jobs:
             -Dsonar.organization=scon-bg
             -Dsonar.sources=src
 
-      - name: Export Issues to JSON
+- name: Export All Issues to JSON
         if: always()
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          curl -u "${SONAR_TOKEN}:" \
-            "https://sonarcloud.io/api/issues/search?componentKeys=scon-bg_src&resolved=false" \
-            -o sonar-issues.json
+          python3 -c '
+          import urllib.request
+          import json
+          import base64
+
+          token = "${{ secrets.SONAR_TOKEN }}"
+          base64_auth = base64.b64encode(f"{token}:".encode()).decode()
+          headers = {"Authorization": f"Basic {base64_auth}"}
+
+          all_issues = []
+          page = 1
+          page_size = 500
+
+          while True:
+              url = f"https://sonarcloud.io/api/issues/search?componentKeys=scon-bg_src&resolved=false&ps={page_size}&p={page}"
+              req = urllib.request.Request(url, headers=headers)
+              
+              try:
+                  with urllib.request.urlopen(req) as response:
+                      data = json.loads(response.read().decode())
+                      issues = data.get("issues", [])
+                      if not issues:
+                          break
+                      all_issues.extend(issues)
+                      print(f"Изтеглена страница {page}, общо проблеми дотук: {len(all_issues)}")
+                      
+                      # Проверка дали сме стигнали крайната страница
+                      if len(issues) < page_size or len(all_issues) >= data.get("total", 0):
+                          break
+                      page += 1
+              except Exception as e:
+                  print(f"Грешка при заявката: {e}")
+                  break
+
+          # Записваме всички събрани проблеми в същия JSON формат, който Python скриптът по-долу очаква
+          with open("sonar-issues.json", "w", encoding="utf-8") as f:
+              json.dump({"issues": all_issues}, f, ensure_ascii=False, indent=2)
+          print(f"Общо изтеглени и записани проблеми: {len(all_issues)}")
+          '
 
       - name: Upload Sonar Issues Artifact
         if: always()
