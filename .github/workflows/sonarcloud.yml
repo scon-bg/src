@@ -1,0 +1,11 @@
+- name: Export Issues to JSON/HTML
+        if: always()
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          # Извличане на отворените проблеми през SonarCloud Web API
+          curl -u "${SONAR_TOKEN}:" \
+            "https://sonarcloud.io/api/issues/search?componentKeys=scon-bg&resolved=false" \
+            -o sonar-issues.json
+            
+          # Тук можете да добавите малък скрипт (напр. Python), който да превърне JSON в красив HTML файл според вашите нужди
