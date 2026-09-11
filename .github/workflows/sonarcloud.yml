@@ -1,11 +1,50 @@
-- name: Export Issues to JSON/HTML
+name: SonarCloud Analysis
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  sonarcloud:
+    name: Build and Analyze
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Нужно е за пълната история на кода
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=scon-bg
+            -Dsonar.organization=scon-bg
+            -Dsonar.sources=src
+
+      - name: Export Issues to JSON
         if: always()
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          # Извличане на отворените проблеми през SonarCloud Web API
           curl -u "${SONAR_TOKEN}:" \
             "https://sonarcloud.io/api/issues/search?componentKeys=scon-bg&resolved=false" \
             -o sonar-issues.json
-            
-          # Тук можете да добавите малък скрипт (напр. Python), който да превърне JSON в красив HTML файл според вашите нужди
+
+      - name: Upload Sonar Issues Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sonar-issues-json
+          path: sonar-issues.json
