@@ -33,6 +33,13 @@ jobs:
             -Dsonar.organization=scon-bg
             -Dsonar.sources=src
 
+      - name: Upload Perl Critic Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: perl-critic-report
+          path: perl-report/perlcritic-results.txt
+
       - name: Export All Issues to JSON
         if: always()
         env:
@@ -145,3 +152,17 @@ jobs:
         with:
           name: sonar-html-report
           path: sonar-report.html
+
+      - name: Run Perl Critic Analysis
+        if: always()
+        run: |
+          # Инсталиране на Perl::Critic и необходимите модули за изход
+          sudo apt-get update
+          sudo apt-get install -y libperl-critic-perl
+          
+          # Създаване на папка за отчета
+          mkdir -p perl-report
+          
+          # Изпълнение на perlcritic върху папка 'src' (или където се пазят perl файловете ви)
+          # Използваме строг режим (severity 3 или 2) и записваме в текстов файл
+          perlcritic --severity 3 --verbose 8 src/ > perl-report/perlcritic-results.txt || true

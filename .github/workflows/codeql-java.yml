@@ -1,0 +1,50 @@
+name: "CodeQL Java"
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  schedule:
+    - cron: '30 1 * * 0' # Пуска се и автоматично всяка седмица
+
+jobs:
+  analyze:
+    name: Analyze Java
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # 1. Инициализиране на CodeQL за Java
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: java
+
+      # 2. Компилация на проекта (Важно за Java, за да може CodeQL да улови зависимостите)
+      # Заменете с вашата билд система (Maven, Gradle или Ant)
+      - name: Build with Maven
+        run: |
+          if [ -f "pom.xml" ]; then
+            mvn clean compile -DskipTests
+          elif [ -f "build.gradle" ]; then
+            ./gradlew compileJava
+          else
+            echo "Няма намерена билд система, CodeQL ще опита автоматичен анализ."
+          fi
+
+      # 3. Изпълнение на анализа и качване на резултатите в GitHub Security табулацията
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
