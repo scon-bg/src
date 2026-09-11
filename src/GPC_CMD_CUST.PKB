@@ -22,7 +22,7 @@ create or replace package body GPC_Cmd_Cust is
     INTERCONNECTED       varchar2( 1 )
   );
 
-  type tаShareholders is table of trShareholders
+  type taShareholders is table of trShareholders
     index by binary_integer;
 
   type trCustomsSearchParams is record(
@@ -6265,7 +6265,7 @@ create or replace package body GPC_Cmd_Cust is
   --------------------------------------------------------------------------------
   function GetShareholderHierarchyTree(
     nIDCust         in     pls_integer,
-    аShareholders  in out tаShareholders,
+    аShareholders  in out taShareholders,
     sTraceString    in     varchar2,
     nLevel          in     pls_integer,
     nUpperItem      in     pls_integer
@@ -6273,7 +6273,7 @@ create or replace package body GPC_Cmd_Cust is
     return boolean is
     oDoc            Schema_GPSys.RecDocSysType;
     oList           Schema_GPSys.DocSysList;
-    аIDs           tаShareholders;
+    аIDs           taShareholders;
     rCust           CUSTOMS%rowtype;
     nShareholderID  pls_integer;
     bRet            boolean := true;
@@ -6373,7 +6373,7 @@ create or replace package body GPC_Cmd_Cust is
   --------------------------------------------------------------------------------
   function CmdShareholdersHierarchyTree( aParamEntities3D in Schema_GPSys.GPC_Parser.taParamEntities3D )
     return boolean is
-    аShareholders  tаShareholders;
+    аShareholders  taShareholders;
     aRowValues      Schema_GPSys.GPC_Parser.taParamStrings;
     nIDCust         pls_integer;
     nCurrent        pls_integer := 1;
