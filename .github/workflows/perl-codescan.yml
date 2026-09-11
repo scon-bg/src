@@ -1,0 +1,58 @@
+name: Perl Code Scanning
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 4 * * 1'
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  perlcritic:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Perl and Perl::Critic
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y perl cpanminus
+          sudo cpanm --notest Perl::Critic
+
+      - name: Run Perl::Critic
+        run: |
+          find . -name "*.pl" -o -name "*.pm" -o -name "*.t" | \
+          xargs perlcritic --verbose "%f|||%l|||%c|||%s|||%p|||%m\n" \
+            > perlcritic-output.txt || true
+          cat perlcritic-output.txt
+
+      - name: Set up Python (за конвертора)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Convert to SARIF + HTML
+        run: |
+          python3 scripts/perlcritic_to_sarif.py \
+            perlcritic-output.txt \
+            perlcritic.sarif \
+            perlcritic-report.html
+
+      - name: Upload SARIF to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: perlcritic.sarif
+          category: perlcritic
+
+      - name: Upload HTML report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: perlcritic-html-report
+          path: perlcritic-report.html
