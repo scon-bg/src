@@ -49,7 +49,7 @@ jobs:
           name: sonar-issues-json
           path: sonar-issues.json
           
-- name: Generate HTML Report
+      - name: Generate HTML Report
         if: always()
         run: |
           python3 -c '
